@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2043
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManager", "ProjectManager\ProjectManager.csproj", "{EE840F89-FFB1-42C3-8287-C32F5F5945EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagerDB", "ProjectManagerDB\ProjectManagerDB.csproj", "{32E369E4-66B8-4D26-B4DB-5E20C13AC9AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE840F89-FFB1-42C3-8287-C32F5F5945EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE840F89-FFB1-42C3-8287-C32F5F5945EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE840F89-FFB1-42C3-8287-C32F5F5945EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE840F89-FFB1-42C3-8287-C32F5F5945EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32E369E4-66B8-4D26-B4DB-5E20C13AC9AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32E369E4-66B8-4D26-B4DB-5E20C13AC9AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32E369E4-66B8-4D26-B4DB-5E20C13AC9AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32E369E4-66B8-4D26-B4DB-5E20C13AC9AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7674089-8216-4F7C-B30E-160C8D889970}
+	EndGlobalSection
+EndGlobal

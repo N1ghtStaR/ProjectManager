@@ -1,0 +1,14 @@
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\bin\Debug\ProjectManagerDB.dll.config
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\bin\Debug\ProjectManagerDB.dll
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\bin\Debug\ProjectManagerDB.pdb
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\bin\Debug\EntityFramework.dll
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\bin\Debug\EntityFramework.SqlServer.dll
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\bin\Debug\EntityFramework.xml
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\bin\Debug\EntityFramework.SqlServer.xml
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\obj\Debug\ProjectManagerDB.csprojResolveAssemblyReference.cache
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\obj\Debug\ProjectManagerDB.csproj.CoreCompileInputs.cache
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\obj\Debug\ProjectManagerDB.csproj.CopyComplete
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\obj\Debug\ProjectManagerDB.dll
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\obj\Debug\ProjectManagerDB.pdb
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\obj\Debug\ProjectManagerDB.Migrations.Initial.resources
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\obj\Debug\ProjectManagerDB.csproj.GenerateResource.cache

@@ -1,0 +1,43 @@
+﻿@model ProjectManagerDB.Entities.Developer
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Developer</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Username)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Username)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Role)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Role)
+        </dd>
+    </dl>
+</div>
+@if (Session["Role"].ToString().Equals("TeamLeader"))
+{
+    if (Model.Role.ToString().Equals("TeamLeader"))
+    {
+        <a href="@Url.Action("Demote", "Authentication", new { id = Model.ID })" class="btn btn-danger">Demote</a>
+    }
+    else
+    {
+        <a href="@Url.Action("Promote", "Authentication", new { id = Model.ID })" class="btn btn-success">Promote</a>
+    }
+}
