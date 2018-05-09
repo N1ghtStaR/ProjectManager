@@ -15,6 +15,7 @@ namespace ProjectManager.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Registration([Bind(Include = "ID,Username,Email,Password,Role")] Developer developer)
@@ -33,6 +34,7 @@ namespace ProjectManager.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public ActionResult LogIn(string username, string password)
         {
@@ -56,6 +58,11 @@ namespace ProjectManager.Controllers
             return View();
         }
 
+        public ActionResult Promote()
+        {
+            return Content("Do something here...");
+        }
+
         [HttpPost]
         public ActionResult Promote(int id)
         {
@@ -65,6 +72,12 @@ namespace ProjectManager.Controllers
             db.SaveChanges();
             return View(developer);
         }
+
+        public ActionResult Demote()
+        {
+            return Content("Do something here...");
+        }
+
         [HttpPost]
         public ActionResult Demote(int id)
         {
