@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -57,22 +58,18 @@ namespace ProjectManager.Controllers
         }
 
         [HttpPost]
-        public ActionResult Promote(int id)
+        public ActionResult Promote(int? id) //Not Working HTTP 404!
         {
             Developer developer = db.Developers.Find(id);
-            developer.Role.ToString().Equals("TeamLeader");
+            developer.Role.Equals("TeamLeader");
             UpdateModel(developer);
             db.SaveChanges();
-            return View(developer);
+            return View();
         }
         [HttpPost]
-        public ActionResult Demote(int id)
+        public ActionResult Demote(int id) //Not Working HTTP 404!
         {
             Developer developer = db.Developers.Find(id);
-            if(developer == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
             developer.Role.Equals("Developer");
             UpdateModel(developer);
             db.SaveChanges();

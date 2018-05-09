@@ -91,8 +91,8 @@ E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\Mic
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\Microsoft.AI.ServerTelemetryChannel.xml
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\Microsoft.AI.WindowsServer.xml
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\Microsoft.AI.Web.xml
-E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\obj\Debug\ProjectManager.csprojResolveAssemblyReference.cache
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\obj\Debug\ProjectManager.csproj.CoreCompileInputs.cache
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\obj\Debug\ProjectManager.csproj.CopyComplete
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\obj\Debug\ProjectManager.dll
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\obj\Debug\ProjectManager.pdb
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\obj\Debug\ProjectManager.csprojAssemblyReference.cache
