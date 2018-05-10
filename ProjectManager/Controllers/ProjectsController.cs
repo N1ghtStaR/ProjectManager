@@ -13,15 +13,21 @@ namespace ProjectManager.Controllers
     {
         private ProjectManagerDbContext db = new ProjectManagerDbContext();
 
-        public ActionResult Index() //Do not show projects
+        public ActionResult List()
         {
-            var projects = db.Projects.Include(p => p.Develeper);
+            int id = (int)Session["ID"];
+            var projects = db.Projects.Where(p => p.DeveleperID.Equals(id));
             return View(projects.ToList());
+        }
+        public ActionResult ListInProgress()
+        {
+            var projects = db.Projects.Where(p => p.Status.ToString().Equals("InProgress"));
+            return View("List", projects.ToList());
         }
 
         public ActionResult Create()
         {
-            ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username");
+            ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", Session["ID"]);
             return View();
         }
 
@@ -35,7 +41,6 @@ namespace ProjectManager.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
             return View(project);
         }
 

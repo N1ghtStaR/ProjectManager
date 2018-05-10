@@ -25,7 +25,7 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     @if (Session["ID"] != null)
                     {
-                        <li><a href="@Url.Action("Index", "Projects", new { id = Session["ID"] })">Projects</a></li>
+                        <li><a href="@Url.Action("List", "Projects")">Projects</a></li>
                         <li><a href="#">Incomes</a></li>
                     }
                 </ul>
@@ -37,7 +37,7 @@
                     }
                     else
                     {
-                        <li><a href="@Url.Action("AccountDetails", "Authentication")"><span class="glyphicon glyphicon-user"></span>@Session["Username"]</a></li>
+                        <li><a href="@Url.Action("AccountDetails", "Authentication", new { id = Session["ID"] })"><span class="glyphicon glyphicon-user"></span>@Session["Username"]</a></li>
                         <li><a href="@Url.Action("LogOut", "Authentication")"><span class="glyphicon glyphicon-log-out"></span>Log out</a></li>
                     }
                 </ul>
