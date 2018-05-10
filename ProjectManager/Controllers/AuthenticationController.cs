@@ -43,6 +43,8 @@ namespace ProjectManager.Controllers
                 {
                     var developer = db.Developers.Where(d => d.Username.Equals(username) && d.Password.Equals(password)).Single();
 
+
+                    HttpContext.Session["ID"] = developer.ID;
                     Session["ID"] = developer.ID;
                     Session["Username"] = developer.Username;
                     Session["Role"] = developer.Role;
@@ -57,10 +59,14 @@ namespace ProjectManager.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost, ActionName("Update")]
         public ActionResult Promote(int? id) //Not Working HTTP 404!
         {
             Developer developer = db.Developers.Find(id);
+            if(developer == null)
+            {
+                return HttpNotFound();
+            }
             developer.Role.Equals("TeamLeader");
             UpdateModel(developer);
             db.SaveChanges();
