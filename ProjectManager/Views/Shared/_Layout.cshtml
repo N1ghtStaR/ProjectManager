@@ -26,7 +26,7 @@
                     @if (Session["ID"] != null)
                     {
                         <li><a href="@Url.Action("List", "Projects")">Projects</a></li>
-                        <li><a href="#">Incomes</a></li>
+                        <li><a href="@Url.Action("List", "Incomes")">Incomes</a></li>
                     }
                 </ul>
                 <ul class="nav navbar-nav navbar-right">

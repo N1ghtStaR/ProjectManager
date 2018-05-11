@@ -15,50 +15,40 @@ namespace ProjectManager.Controllers
     {
         private ProjectManagerDbContext db = new ProjectManagerDbContext();
 
-        public ActionResult FindTasks(int? id)
+        public ActionResult FindTasks(int? id, string title)
         {
             if (id == null)
             {
                 return HttpNotFound();
             }
             Session["ProjectID"] = id;
-            return RedirectToAction("Index");
+            Session["ProjectTitle"] = title;
+            return RedirectToAction("List");
         }
 
-        public ActionResult Index()
+        public ActionResult List()
         {
             int id = (int)Session["ProjectID"];
-            var tasks = db.Tasks.Where(t => t.ProjectID.Equals(id));
+            var tasks = db.Tasks
+                    .Where(t => t.ProjectID.Equals(id));
             return View(tasks.ToList());
         }
 
-
-
-        // GET: Tasks/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult ListInProgress()
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Task task = db.Tasks.Find(id);
-            if (task == null)
-            {
-                return HttpNotFound();
-            }
-            return View(task);
+            int id = (int)Session["ProjectID"];
+            var tasks = db.Tasks
+                    .Where(p => p.Status.ToString().Equals("InProgress"))
+                    .Where(pp => pp.ProjectID.Equals(id));
+            return View("List", tasks.ToList());
         }
 
-        // GET: Tasks/Create
         public ActionResult Create()
         {
             ViewBag.ProjectID = new SelectList(db.Projects, "ID", "Title");
             return View();
         }
 
-        // POST: Tasks/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,ProjectID,Description,Priority,Status")] Task task)
@@ -74,7 +64,6 @@ namespace ProjectManager.Controllers
             return View(task);
         }
 
-        // GET: Tasks/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -90,9 +79,6 @@ namespace ProjectManager.Controllers
             return View(task);
         }
 
-        // POST: Tasks/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,ProjectID,Description,Priority,Status")] Task task)
@@ -107,7 +93,6 @@ namespace ProjectManager.Controllers
             return View(task);
         }
 
-        // GET: Tasks/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -122,7 +107,6 @@ namespace ProjectManager.Controllers
             return View(task);
         }
 
-        // POST: Tasks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

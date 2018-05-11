@@ -4,21 +4,11 @@
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete</h2>
-
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to delete "<span>@Html.DisplayFor(model => model.Title)</span>"</h3>
 <div>
-    <h4>Project</h4>
+    <h4>Information</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Develeper.Username)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Develeper.Username)
-        </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.Title)
         </dt>
@@ -40,25 +30,23 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Category)
+            @if (Model.Category.ToString().Equals("FE"))
+            {
+                <p>Front-end</p>
+            }
+            else
+            {
+                <p>Back-end</p>
+            }
         </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-
     </dl>
 
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="Delete" class="btn btn-default" /> 
+            <a href="@Url.Action("List", "Project")" class="btn btn-default">Back to List</a>
         </div>
     }
 </div>

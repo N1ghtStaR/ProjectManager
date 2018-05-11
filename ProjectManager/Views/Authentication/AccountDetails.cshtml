@@ -38,6 +38,10 @@
     }
     else
     {
-        <a href="@Url.Action("Promote", "Authentication", new { id = Model.ID })" class="btn btn-success">Promote</a>
+        using (@Html.BeginForm("Promote", "Authentication", FormMethod.Post))
+        {
+            @Html.HiddenFor(model => model.ID);
+            <input type="submit" value="Promote" class="btn btn-success" />
+        }
     }
 }

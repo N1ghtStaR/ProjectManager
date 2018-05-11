@@ -16,12 +16,16 @@ namespace ProjectManager.Controllers
         public ActionResult List()
         {
             int id = (int)Session["ID"];
-            var projects = db.Projects.Where(p => p.DeveleperID.Equals(id));
+            var projects = db.Projects
+                        .Where(p => p.DeveleperID.Equals(id));
             return View(projects.ToList());
         }
         public ActionResult ListInProgress()
         {
-            var projects = db.Projects.Where(p => p.Status.ToString().Equals("InProgress"));
+            int id = (int)Session["ID"];
+            var projects = db.Projects
+                        .Where(p => p.Status.ToString().Equals("InProgress"))
+                        .Where(pp => pp.DeveleperID.Equals(id));
             return View("List", projects.ToList());
         }
 
