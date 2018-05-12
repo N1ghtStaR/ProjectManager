@@ -59,7 +59,7 @@ namespace ProjectManager.Controllers
         }
 
         [HttpPost]
-        public ActionResult Promote(int id, string role) //Not Working HTTP 404!
+        public ActionResult Promote(int id) //NOT WORKOING
         {
             Developer developer = db.Developers.Find(id);
             if(developer == null)

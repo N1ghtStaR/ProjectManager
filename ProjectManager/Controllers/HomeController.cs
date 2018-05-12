@@ -11,8 +11,14 @@ namespace ProjectManager.Controllers
     {
         private ProjectManagerDbContext db = new ProjectManagerDbContext();
 
-        public ActionResult Index()
+        public ActionResult Index(string developerUsername)
         {
+            if(!String.IsNullOrEmpty(developerUsername))
+            {
+                return View(db.Developers
+                                .Where(d => d.Username.Contains(developerUsername))
+                                .ToList());
+            }
             return View(db.Developers.ToList());
         }
     }

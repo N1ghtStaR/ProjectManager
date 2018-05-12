@@ -30,6 +30,8 @@
         </dd>
     </dl>
 </div>
+
+<!-- NOT WORKING -->
 @if (Session["Role"].ToString().Equals("TeamLeader"))
 {
     if (Model.Role.ToString().Equals("TeamLeader"))
@@ -38,9 +40,9 @@
     }
     else
     {
-        using (@Html.BeginForm("Promote", "Authentication", FormMethod.Post))
+        using(@Html.BeginForm("Promote", "Authentication", FormMethod.Post))
         {
-            @Html.HiddenFor(model => model.ID);
+            @Html.TextBox("id")
             <input type="submit" value="Promote" class="btn btn-success" />
         }
     }

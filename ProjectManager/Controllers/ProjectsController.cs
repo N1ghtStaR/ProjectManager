@@ -13,19 +13,37 @@ namespace ProjectManager.Controllers
     {
         private ProjectManagerDbContext db = new ProjectManagerDbContext();
 
-        public ActionResult List()
+        public ActionResult List(string projectName)
         {
             int id = (int)Session["ID"];
-            var projects = db.Projects
-                        .Where(p => p.DeveleperID.Equals(id));
-            return View(projects.ToList());
+
+            if(!String.IsNullOrEmpty(projectName))
+            {
+                return View(db.Projects
+                                .Where(p => p.DeveleperID.Equals(id))
+                                .Where(s => s.Title.Contains(projectName))
+                                .ToList());
+            }
+
+            return View(db.Projects
+                            .Where(p => p.DeveleperID.Equals(id))
+                            .ToList());
         }
         public ActionResult ListInProgress()
         {
             int id = (int)Session["ID"];
             var projects = db.Projects
-                        .Where(p => p.Status.ToString().Equals("InProgress"))
-                        .Where(pp => pp.DeveleperID.Equals(id));
+                                .Where(p => p.Status.ToString().Equals("InProgress"))
+                                .Where(d => d.DeveleperID.Equals(id));
+            return View("List", projects.ToList());
+        }
+
+        public ActionResult Ready()
+        {
+            int id = (int)Session["ID"];
+            var projects = db.Projects
+                                .Where(p => p.Status.ToString().Equals("Ready"))
+                                .Where(d => d.DeveleperID.Equals(id));
             return View("List", projects.ToList());
         }
 
