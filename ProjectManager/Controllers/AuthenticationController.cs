@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -59,35 +60,25 @@ namespace ProjectManager.Controllers
         }
 
         [HttpPost]
-        public ActionResult Promote(int id) //NOT WORKOING
+        [ValidateAntiForgeryToken]
+        public ActionResult Update([Bind(Include = "ID,Username,Password,Email,Role")] Developer developer)
         {
-            Developer developer = db.Developers.Find(id);
-            if(developer == null)
+            if (ModelState.IsValid)
             {
-                return HttpNotFound();
+                db.Entry(developer).State = EntityState.Modified;
+                db.SaveChanges();
             }
-            developer.Role.ToString().Equals("TeamLeader");
-            db.SaveChanges();
-            return View();
-        }
-        [HttpPost]
-        public ActionResult Demote(int id) //Not Working HTTP 404!
-        {
-            Developer developer = db.Developers.Find(id);
-            developer.Role.Equals("Developer");
-            UpdateModel(developer);
-            db.SaveChanges();
-            return View(developer);
-        }
-
-        public ActionResult LogOut()
-        {
-            Session["ID"] = null;
-            Session["Username"] = null;
-            Session["Role"] = null;
-
             return RedirectToAction("Index", "Home");
         }
+
+            public ActionResult LogOut()
+            {
+                Session["ID"] = null;
+                Session["Username"] = null;
+                Session["Role"] = null;
+
+                return RedirectToAction("Index", "Home");
+            }
 
         public ActionResult AccountDetails(int? id)
         {
@@ -99,6 +90,16 @@ namespace ProjectManager.Controllers
             if (developer == null)
             {
                 return HttpNotFound();
+            }
+            if (developer.Role.ToString().Equals("Developer"))
+            {
+                ViewBag.SubmitValue = "Promote";
+                ViewBag.RoleValue = "TeamLeader";
+            }
+            else
+            {
+                ViewBag.SubmitValue = "Demote";
+                ViewBag.RoleValue = "Developer";
             }
             return View(developer);
         }

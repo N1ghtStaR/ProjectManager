@@ -15,6 +15,10 @@ namespace ProjectManager.Controllers
 
         public ActionResult List(string projectName)
         {
+            if(Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }   
             int id = (int)Session["ID"];
 
             if(!String.IsNullOrEmpty(projectName))
@@ -29,21 +33,34 @@ namespace ProjectManager.Controllers
                             .Where(p => p.DeveleperID.Equals(id))
                             .ToList());
         }
+
         public ActionResult ListInProgress()
         {
+            if(Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
             int id = (int)Session["ID"];
+
             var projects = db.Projects
                                 .Where(p => p.Status.ToString().Equals("InProgress"))
                                 .Where(d => d.DeveleperID.Equals(id));
+
             return View("List", projects.ToList());
         }
 
         public ActionResult Ready()
         {
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
             int id = (int)Session["ID"];
+
             var projects = db.Projects
                                 .Where(p => p.Status.ToString().Equals("Ready"))
                                 .Where(d => d.DeveleperID.Equals(id));
+
             return View("List", projects.ToList());
         }
 
@@ -117,6 +134,24 @@ namespace ProjectManager.Controllers
             db.Projects.Remove(project);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [HttpPost, ActionName("Update")]
+        [ValidateAntiForgeryToken]
+        public ActionResult Status(int id)
+        {
+            var tasks = db.Tasks
+                            .Where(p => p.ProjectID.Equals(id))
+                            .ToList();
+            foreach(var task in tasks)
+            {
+                if(task.Status.ToString().Equals("InProgress"))
+                {
+                    return RedirectToAction("List", "Projects");
+                }
+            }
+            //Update project's status to ready
+            return RedirectToAction("Create", "Incomes");
         }
 
         protected override void Dispose(bool disposing)
