@@ -10,7 +10,7 @@
         public enum Division
         {
             [Display(Name = "Front-end")] FE,
-            [Display(Name = "Back_end")] BE
+            [Display(Name = "Back-end")] BE
         }
 
         public enum Statistic

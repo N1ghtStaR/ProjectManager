@@ -4,10 +4,9 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
-
+<h2>User Details</h2>
 <div>
-    <h4>Developer</h4>
+    <h4>@Model.Role</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -30,7 +29,6 @@
         </dd>
     </dl>
 </div>
-
 @if (Session["Role"].ToString().Equals("TeamLeader"))
 {
     using (Html.BeginForm("Update", "Authentication"))
@@ -71,7 +69,7 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="@ViewBag.SubmitValue" class="btn btn-danger" />
+                <input type="submit" value="@ViewBag.SubmitValue" class="btn btn-primary" />
                 <a href="@Url.Action("List", "Projects")" class="btn btn-default">Back</a>
             </div>
             <br />

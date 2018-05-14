@@ -66,7 +66,13 @@ namespace ProjectManager.Controllers
 
         public ActionResult Create()
         {
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+
             ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", Session["ID"]);
+
             return View();
         }
 
@@ -83,18 +89,88 @@ namespace ProjectManager.Controllers
             return View(project);
         }
 
-        public ActionResult Edit(int? id)
+        public ActionResult Confirm(int? id)
         {
-            if (id == null)
+            if(Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+            else if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Project project = db.Projects.Find(id);
+
             if (project == null)
             {
                 return HttpNotFound();
             }
+
             ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", project.DeveleperID);
+
+            Session["ProjectID"] = id;
+            ViewBag.Status = "Ready";
+
+            return View("Details", project);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Update([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] Project project)
+        {
+            if(Session["ID"] == null)
+            {
+                return RedirectToAction("Login", "Authentication");
+            }
+
+            if (ModelState.IsValid)
+            {
+                int id = (int)Session["ID"];
+                var tasks = db.Tasks
+                                .Where(p => p.ProjectID.Equals(id));
+
+                if (tasks != null)
+                {
+                    foreach (var task in tasks)
+                    {
+                        if (task.Status.ToString().Equals("InProgress"))
+                        {
+                            return RedirectToAction("List", "Tasks");
+                        }
+                    }
+                }
+
+                db.Entry(project).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("List", "Projects");
+            }
+                ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", project.DeveleperID);
+
+                return View(project);
+        }
+
+        public ActionResult Edit(int? id)
+        {
+            if(Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+            else if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Project project = db.Projects.Find(id);
+
+            if (project == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", project.DeveleperID);
+
             return View(project);
         }
 
@@ -106,23 +182,33 @@ namespace ProjectManager.Controllers
             {
                 db.Entry(project).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+                return RedirectToAction("List", "Projects");
             }
+
             ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", project.DeveleperID);
+
             return View(project);
         }
 
         public ActionResult Delete(int? id)
         {
-            if (id == null)
+            if(Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+            else if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Project project = db.Projects.Find(id);
+
             if (project == null)
             {
                 return HttpNotFound();
             }
+
             return View(project);
         }
 
@@ -134,24 +220,6 @@ namespace ProjectManager.Controllers
             db.Projects.Remove(project);
             db.SaveChanges();
             return RedirectToAction("Index");
-        }
-
-        [HttpPost, ActionName("Update")]
-        [ValidateAntiForgeryToken]
-        public ActionResult Status(int id)
-        {
-            var tasks = db.Tasks
-                            .Where(p => p.ProjectID.Equals(id))
-                            .ToList();
-            foreach(var task in tasks)
-            {
-                if(task.Status.ToString().Equals("InProgress"))
-                {
-                    return RedirectToAction("List", "Projects");
-                }
-            }
-            //Update project's status to ready
-            return RedirectToAction("Create", "Incomes");
         }
 
         protected override void Dispose(bool disposing)

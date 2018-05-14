@@ -3,8 +3,7 @@
 @{
     ViewBag.Title = "Projects";
 }
-
-<h2><span>@Session["Username"]</span>'s Projects</h2>
+<h2>@Session["Username"]'s Projects</h2>
 <hr />
 <br />
 <div class="row">
@@ -18,6 +17,7 @@
                 }
             </div>
             <div class="panel-body">
+
                 <table style="width:100%" class="table table-striped table-bordered table-hover datatables">
                     <thead>
                         <tr>
@@ -43,16 +43,30 @@
                                     @Html.DisplayFor(modelItem => item.Description)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Category)
+                                    @if (item.Category.ToString().Equals("FE"))
+                                    {
+                                        <p>Front-end</p>
+                                    }
+                                    else
+                                    {
+                                        <p>Back-end</p>
+                                    }
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Status)
+                                    @if (item.Status.ToString().Equals("Ready"))
+                                    {
+                                        <p>Ready</p>
+                                    }
+                                    else
+                                    {
+                                        <p>In progress</p>
+                                    }
                                 </td>
                                 <td>
                                     @if (item.Status.ToString().Equals("InProgress"))
                                     {
                                         <a href="@Url.Action("Edit", "Projects", new { id = item.ID })" class="btn btn-primary glyphicon glyphicon-edit"></a>
-                                        <a href="@Url.Action("Status", "Projects", new { id = item.ID })" class="btn btn-primary glyphicon glyphicon-ok"></a>
+                                        <a href="@Url.Action("Confirm", "Projects", new { id = item.ID })" class="btn btn-primary glyphicon glyphicon-ok"></a>
                                         <a href="@Url.Action("Delete", "Projects", new { id = item.ID })" class="btn btn-primary glyphicon glyphicon-trash"></a>
                                     }
                                     else
