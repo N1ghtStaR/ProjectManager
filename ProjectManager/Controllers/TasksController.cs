@@ -93,6 +93,49 @@ namespace ProjectManager.Controllers
             return View(task);
         }
 
+        public ActionResult Confirm(int? id)
+        {
+            if(Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+            else if (id == null)
+            {
+                return RedirectToAction("List", "Tasks");
+            }
+
+            Task task = db.Tasks.Find(id);
+            if(task == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewBag.ProjectID = new SelectList(db.Projects, "ID", "Title", task.ProjectID);
+            ViewBag.Status = "Ready";
+
+            return View(task);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Update([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] Task task)
+        {
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("Login", "Authentication");
+            }
+
+            if (ModelState.IsValid)
+            {
+                db.Entry(task).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("List", "Projects");
+            }
+
+            return View(task);
+        }
+
         public ActionResult Delete(int? id)
         {
             if (id == null)

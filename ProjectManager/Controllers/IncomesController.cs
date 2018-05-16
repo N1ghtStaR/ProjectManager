@@ -58,17 +58,6 @@ namespace ProjectManager.Controllers
             return View(income);
         }
 
-        public ActionResult DetailsIncome(int id)
-        {
-            var income = db.Incomes
-                            .Where(i => i.ProjectID.Equals(id));
-            if(income == null)
-            {
-                return RedirectToAction("Create", "Incomes");
-            }
-            return View(income);
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
