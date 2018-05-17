@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using ProjectManagerDB;
 using ProjectManagerDB.Entities;
@@ -37,6 +33,12 @@ namespace ProjectManager.Controllers
 
         public ActionResult Create()
         {
+            int id = (int)Session["ProjectID"];
+
+            Project project = db.Projects.Find(id);
+
+            ViewBag.ProjectName = project.Title;
+
             ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", Session["ID"]);
             ViewBag.ProjectID = new SelectList(db.Projects, "ID", "Title", Session["ProjectID"]);
             return View();
@@ -55,6 +57,27 @@ namespace ProjectManager.Controllers
 
             ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", income.DeveleperID);
             ViewBag.ProjectID = new SelectList(db.Projects, "ID", "Title", income.ProjectID);
+            return View(income);
+        }
+
+        public ActionResult Details(int? id)
+        {
+            if(Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+            else if(id == null)
+            {
+                return RedirectToAction("List", "Projects");
+            }
+
+            Income income = db.Incomes.Find(id);
+
+            if (income == null)
+            {
+                return HttpNotFound();
+            }
+
             return View(income);
         }
 

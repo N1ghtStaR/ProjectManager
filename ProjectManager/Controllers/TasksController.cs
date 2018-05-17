@@ -21,31 +21,75 @@ namespace ProjectManager.Controllers
             {
                 return HttpNotFound();
             }
+
+            Project project = db.Projects
+                                    .Find(id);
+
             Session["ProjectID"] = id;
             Session["ProjectTitle"] = title;
+            Session["ProjectStatus"] = project.Status;
+
             return RedirectToAction("List");
         }
 
         public ActionResult List()
         {
+            if(Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
             int id = (int)Session["ProjectID"];
+
             var tasks = db.Tasks
                     .Where(t => t.ProjectID.Equals(id));
+
             return View(tasks.ToList());
         }
 
         public ActionResult ListInProgress()
         {
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+
             int id = (int)Session["ProjectID"];
+
             var tasks = db.Tasks
                     .Where(p => p.Status.ToString().Equals("InProgress"))
                     .Where(pp => pp.ProjectID.Equals(id));
+
+            return View("List", tasks.ToList());
+        }
+
+        public ActionResult Ready()
+        {
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+            int id = (int)Session["ProjectID"];
+
+            var tasks = db.Tasks
+                   .Where(p => p.Status.ToString().Equals("Ready"))
+                   .Where(d => d.ProjectID.Equals(id));
+
             return View("List", tasks.ToList());
         }
 
         public ActionResult Create()
         {
+            if(Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+            else if(Session["ProjectStatus"].ToString().Equals("Ready"))
+            {
+                return RedirectToAction("List", "Task");
+            }
+
             ViewBag.ProjectID = new SelectList(db.Projects, "ID", "Title");
+
             return View();
         }
 
@@ -53,15 +97,22 @@ namespace ProjectManager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,ProjectID,Description,Priority,Status")] Task task)
         {
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+
             if (ModelState.IsValid)
             {
                 db.Tasks.Add(task);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+            }
+            else
+            {
+                ViewBag.ProjectID = new SelectList(db.Projects, "ID", "Title", task.ProjectID);
             }
 
-            ViewBag.ProjectID = new SelectList(db.Projects, "ID", "Title", task.ProjectID);
-            return View(task);
+            return RedirectToAction("List", "Tasks");
         }
 
         public ActionResult Edit(int? id)
@@ -70,12 +121,16 @@ namespace ProjectManager.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Task task = db.Tasks.Find(id);
+
             if (task == null)
             {
                 return HttpNotFound();
             }
+
             ViewBag.ProjectID = new SelectList(db.Projects, "ID", "Title", task.ProjectID);
+
             return View(task);
         }
 
@@ -83,14 +138,21 @@ namespace ProjectManager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,ProjectID,Description,Priority,Status")] Task task)
         {
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+
             if (ModelState.IsValid)
             {
                 db.Entry(task).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             ViewBag.ProjectID = new SelectList(db.Projects, "ID", "Title", task.ProjectID);
-            return View(task);
+
+            return RedirectToAction("List", "Tasks");
         }
 
         public ActionResult Confirm(int? id)
@@ -111,6 +173,7 @@ namespace ProjectManager.Controllers
             }
 
             ViewBag.ProjectID = new SelectList(db.Projects, "ID", "Title", task.ProjectID);
+
             ViewBag.Status = "Ready";
 
             return View(task);
@@ -118,7 +181,7 @@ namespace ProjectManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] Task task)
+        public ActionResult Update([Bind(Include = "ID,ProjectID,Description,Priority,Status")] Task task)
         {
             if (Session["ID"] == null)
             {
@@ -130,7 +193,7 @@ namespace ProjectManager.Controllers
                 db.Entry(task).State = EntityState.Modified;
                 db.SaveChanges();
 
-                return RedirectToAction("List", "Projects");
+                return RedirectToAction("List", "Tasks");
             }
 
             return View(task);
@@ -142,10 +205,12 @@ namespace ProjectManager.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Task task = db.Tasks.Find(id);
             if (task == null)
             {
                 return HttpNotFound();
+
             }
             return View(task);
         }
@@ -155,8 +220,10 @@ namespace ProjectManager.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Task task = db.Tasks.Find(id);
+
             db.Tasks.Remove(task);
             db.SaveChanges();
+
             return RedirectToAction("Index");
         }
 
@@ -166,6 +233,7 @@ namespace ProjectManager.Controllers
             {
                 db.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

@@ -15,31 +15,50 @@ namespace ProjectManager.Controllers
 
         public ActionResult Registration()
         {
-            return View();
+            if(Session["ID"] == null)
+            {
+                return View();
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Registration([Bind(Include = "ID,Username,Email,Password,Role")] Developer developer)
         {
-            if (ModelState.IsValid)
+            if(Session["ID"] == null)
             {
+                if (ModelState.IsValid)
+                {
                     db.Developers.Add(developer);
                     db.SaveChanges();
 
                     Session["ID"] = developer.ID;
                     Session["Username"] = developer.Username;
                     Session["Role"] = developer.Role;
-                    Session["ProjectID"] = null;
 
-                return RedirectToAction("Index", "Home");
+                    Session["ProjectID"] = null;
+                    Session["ProjectTitle"] = null;
+                    Session["ProjectStatus"] = null;
+
+                    return RedirectToAction("Index", "Home");
+                }
+
+                return View(developer);
             }
-            return View(developer);
+
+            return RedirectToAction("Index", "Home");
         }
 
         public ActionResult LogIn()
         {
-            return View();
+            if(Session["ID"] == null)
+            {
+                return View();
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -56,7 +75,10 @@ namespace ProjectManager.Controllers
                     Session["ID"] = developer.ID;
                     Session["Username"] = developer.Username;
                     Session["Role"] = developer.Role;
+
                     Session["ProjectID"] = null;
+                    Session["ProjectTitle"] = null;
+                    Session["ProjectStatus"] = null;
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -89,10 +111,16 @@ namespace ProjectManager.Controllers
 
         public ActionResult LogOut()
         {
-            Session["ID"] = null;
-            Session["Username"] = null;
-            Session["Role"] = null;
-            Session["ProjectID"] = null;
+            if(Session["ID"] != null)
+            {
+                Session["ID"] = null;
+                Session["Username"] = null;
+                Session["Role"] = null;
+
+                Session["ProjectID"] = null;
+                Session["ProjectTitle"] = null;
+                Session["ProjectStatus"] = null;
+            }
 
             return RedirectToAction("Index", "Home");
         }
@@ -107,6 +135,7 @@ namespace ProjectManager.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
 
             Developer developer = db.Developers.Find(id);
             if (developer == null)
@@ -134,6 +163,7 @@ namespace ProjectManager.Controllers
             {
                 db.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

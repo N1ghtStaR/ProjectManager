@@ -84,9 +84,9 @@ namespace ProjectManager.Controllers
             {
                 db.Projects.Add(project);
                 db.SaveChanges();
-                return RedirectToAction("Index");
             }
-            return View(project);
+
+            return RedirectToAction("List", "Projects");
         }
 
         public ActionResult Confirm(int? id)
@@ -112,7 +112,7 @@ namespace ProjectManager.Controllers
             Session["ProjectID"] = id;
             ViewBag.Status = "Ready";
 
-            return View("Details", project);
+            return View("Confirm", project);
         }
 
         [HttpPost]
@@ -144,11 +144,14 @@ namespace ProjectManager.Controllers
                 db.Entry(project).State = EntityState.Modified;
                 db.SaveChanges();
 
-                return RedirectToAction("List", "Projects");
-            }
-                ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", project.DeveleperID);
+                Session["ProjectID"] = project.ID;
 
-                return View(project);
+                return RedirectToAction("Create", "Incomes");
+            }
+
+            ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", project.DeveleperID);
+
+            return View(project);
         }
 
         public ActionResult Edit(int? id)
@@ -217,9 +220,11 @@ namespace ProjectManager.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Project project = db.Projects.Find(id);
+
             db.Projects.Remove(project);
             db.SaveChanges();
-            return RedirectToAction("Index");
+
+            return RedirectToAction("List", "Projects");
         }
 
         protected override void Dispose(bool disposing)

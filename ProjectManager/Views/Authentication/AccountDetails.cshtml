@@ -28,51 +28,52 @@
             @Html.DisplayFor(model => model.Role)
         </dd>
     </dl>
+
+        @if (Session["Role"].ToString().Equals("TeamLeader") && Model.ID != (int)Session["ID"])
+        {
+            using (Html.BeginForm("Update", "Authentication"))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal hidden">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.ID)
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ID, "ID", htmlAttributes: new { @class = "control-label col-md-2" })
+                     </div>
+                     <div class="form-group">
+                        @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="col-md-10">
+                            <input type="text" name="Role" value="@ViewBag.RoleValue" />
+                        </div>
+                     </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="@ViewBag.SubmitValue" class="btn btn-primary" />
+                        <a href="@Url.Action("List", "Projects")" class="btn btn-default">Back</a>
+                    </div>
+                    <br />
+                </div>
+            }
+         }
 </div>
-@if (Session["Role"].ToString().Equals("TeamLeader"))
-{
-    using (Html.BeginForm("Update", "Authentication"))
-    {
-        @Html.AntiForgeryToken()
-            <div class="form-horizontal hidden">
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                @Html.HiddenFor(model => model.ID)
-            <div class="form-group">
-                @Html.LabelFor(model => model.ID, "ID", htmlAttributes: new { @class = "control-label col-md-2" })
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-10">
-                    <input type="text" name="Role" value="@ViewBag.RoleValue" />
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="@ViewBag.SubmitValue" class="btn btn-primary" />
-                <a href="@Url.Action("List", "Projects")" class="btn btn-default">Back</a>
-            </div>
-            <br />
-        </div>
-    }
-}
