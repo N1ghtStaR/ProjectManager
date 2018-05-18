@@ -228,6 +228,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ProjectManagerDataAccess\ProjectManagerDataAccess.csproj">
+      <Project>{c0413b38-e669-498f-a6ec-7b0152f0c062}</Project>
+      <Name>ProjectManagerDataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProjectManagerDB\ProjectManagerDB.csproj">
       <Project>{32e369e4-66b8-4d26-b4db-5e20c13ac9aa}</Project>
       <Name>ProjectManagerDB</Name>
