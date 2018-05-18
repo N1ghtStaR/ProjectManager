@@ -1,9 +1,6 @@
 namespace ProjectManagerDataAccess
 {
-    using System;
     using System.Data.Entity;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class ProjectManagerDbContext : DbContext
     {

@@ -1,12 +1,10 @@
-﻿using ProjectManagerDataAccess.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProjectManagerServices
+﻿namespace ProjectManagerServices
 {
+    using ProjectManagerDataAccess.Repositories;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public abstract class Service<TEntity> : IService<TEntity> where TEntity : class
     {
         private IRepository<TEntity> repository;

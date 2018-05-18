@@ -236,6 +236,10 @@
       <Project>{32e369e4-66b8-4d26-b4db-5e20c13ac9aa}</Project>
       <Name>ProjectManagerDB</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ProjectManagerServices\ProjectManagerServices.csproj">
+      <Project>{9f873c61-bf74-4b66-a8ef-05ed08fc33ee}</Project>
+      <Name>ProjectManagerServices</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

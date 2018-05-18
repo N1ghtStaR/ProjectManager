@@ -1,0 +1,15 @@
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\bin\Debug\ProjectManagerServices.dll
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\bin\Debug\ProjectManagerServices.pdb
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\bin\Debug\ProjectManagerDataAccess.dll
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\bin\Debug\EntityFramework.dll
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\bin\Debug\ProjectManagerDB.dll
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\bin\Debug\ProjectManagerDataAccess.pdb
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\bin\Debug\ProjectManagerDataAccess.dll.config
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\bin\Debug\EntityFramework.xml
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\bin\Debug\ProjectManagerDB.pdb
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\bin\Debug\ProjectManagerDB.dll.config
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\obj\Debug\ProjectManagerServices.csprojAssemblyReference.cache
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\obj\Debug\ProjectManagerServices.csproj.CoreCompileInputs.cache
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\obj\Debug\ProjectManagerServices.csproj.CopyComplete
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\obj\Debug\ProjectManagerServices.dll
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerServices\obj\Debug\ProjectManagerServices.pdb

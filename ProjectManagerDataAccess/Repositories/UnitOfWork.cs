@@ -6,7 +6,7 @@
     using System.Data.Entity.Infrastructure;
     using System.Data.Common;
 
-    class UnitOfWork
+    public class UnitOfWork
     {
         private ProjectManagerDbContext context;
 
