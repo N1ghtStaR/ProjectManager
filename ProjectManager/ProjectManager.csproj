@@ -181,7 +181,9 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -229,16 +231,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectManagerDataAccess\ProjectManagerDataAccess.csproj">
-      <Project>{c0413b38-e669-498f-a6ec-7b0152f0c062}</Project>
+      <Project>{90e182d3-ad98-4044-a693-98f47c4c021b}</Project>
       <Name>ProjectManagerDataAccess</Name>
     </ProjectReference>
     <ProjectReference Include="..\ProjectManagerDB\ProjectManagerDB.csproj">
       <Project>{32e369e4-66b8-4d26-b4db-5e20c13ac9aa}</Project>
       <Name>ProjectManagerDB</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectManagerServices\ProjectManagerServices.csproj">
-      <Project>{9f873c61-bf74-4b66-a8ef-05ed08fc33ee}</Project>
-      <Name>ProjectManagerServices</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

@@ -97,7 +97,5 @@ E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\obj\Deb
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\obj\Debug\ProjectManager.pdb
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\obj\Debug\ProjectManager.csprojAssemblyReference.cache
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\ProjectManagerDataAccess.dll
-E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\ProjectManagerServices.dll
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\ProjectManagerDataAccess.pdb
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\ProjectManagerDataAccess.dll.config
-E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\ProjectManagerServices.pdb

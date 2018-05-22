@@ -1,25 +1,38 @@
-﻿using ProjectManagerDB;
+﻿using ProjectManagerDataAccess.Repositories.DeveloperRepository;
+using ProjectManagerDB;
+using ProjectManagerDB.Entities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace ProjectManager.Controllers
 {
     public class HomeController : Controller
     {
-        private ProjectManagerDbContext db = new ProjectManagerDbContext();
+        private IDeveloperRepository developerRepository;
+
+        public HomeController()
+        {
+            this.developerRepository = new DeveloperRepository(new ProjectManagerDbContext());
+        }
+
+        public HomeController(IDeveloperRepository developerRepository)
+        {
+            this.developerRepository = developerRepository;
+        }
 
         public ActionResult Index(string developerUsername)
         {
-            if(!String.IsNullOrEmpty(developerUsername))
+            if (!String.IsNullOrEmpty(developerUsername))
             {
-                return View(db.Developers
-                                .Where(d => d.Username.Contains(developerUsername))
-                                .ToList());
+                var developersSearched = from s in developerRepository.GetDevelopersByUsername(developerUsername) select s;
+
+                return View(developersSearched);
             }
-            return View(db.Developers.ToList());
+
+            var developers = from s in developerRepository.GetDevelopers() select s;
+
+            return View(developers);
         }
     }
 }

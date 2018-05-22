@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C0413B38-E669-498F-A6EC-7B0152F0C062}</ProjectGuid>
+    <ProjectGuid>{90E182D3-AD98-4044-A693-98F47C4C021B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ProjectManagerDataAccess</RootNamespace>
@@ -49,25 +49,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProjectManagerDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MyConfiguration.cs" />
-    <Compile Include="Repositories\IRepository.cs" />
-    <Compile Include="Repositories\Repository.cs" />
-    <Compile Include="Repositories\UnitOfWork.cs" />
+    <Compile Include="Repositories\DeveloperRepository\DeveloperRepository.cs" />
+    <Compile Include="Repositories\DeveloperRepository\IDeveloperRepository.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectManagerDB\ProjectManagerDB.csproj">
-      <Project>{32E369E4-66B8-4D26-B4DB-5E20C13AC9AA}</Project>
+      <Project>{32e369e4-66b8-4d26-b4db-5e20c13ac9aa}</Project>
       <Name>ProjectManagerDB</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

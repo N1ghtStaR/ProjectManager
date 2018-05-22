@@ -1,3 +1,5 @@
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\obj\Debug\ProjectManagerDataAccess.csprojAssemblyReference.cache
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\obj\Debug\ProjectManagerDataAccess.csproj.CoreCompileInputs.cache
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\bin\Debug\ProjectManagerDataAccess.dll.config
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\bin\Debug\ProjectManagerDataAccess.dll
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\bin\Debug\ProjectManagerDataAccess.pdb
@@ -8,8 +10,6 @@ E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAcce
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\bin\Debug\ProjectManagerDB.dll.config
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\bin\Debug\EntityFramework.xml
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\bin\Debug\EntityFramework.SqlServer.xml
-E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\obj\Debug\ProjectManagerDataAccess.csprojAssemblyReference.cache
-E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\obj\Debug\ProjectManagerDataAccess.csproj.CoreCompileInputs.cache
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\obj\Debug\ProjectManagerDataAccess.csproj.CopyComplete
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\obj\Debug\ProjectManagerDataAccess.dll
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\obj\Debug\ProjectManagerDataAccess.pdb

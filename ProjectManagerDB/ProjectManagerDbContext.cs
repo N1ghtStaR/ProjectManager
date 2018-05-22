@@ -10,8 +10,7 @@ namespace ProjectManagerDB
         public DbSet<Project> Projects { get; set; }
         public DbSet<Task> Tasks { get; set; }
 
-        public ProjectManagerDbContext()
-            : base("name=ProjectManagerDbContext")
+        public ProjectManagerDbContext() : base("name=ProjectManagerDbContext")
         {
         }
 
