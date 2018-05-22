@@ -8,9 +8,13 @@
     {
         IEnumerable<Developer> GetDevelopers();
         IEnumerable<Developer> GetDevelopersByUsername(string username);
+
+        Developer LogIn(string username, string password);
         Developer GetDeveloperByID(int developerID);
+
         void InsertDeveloper(Developer developer);
         void UpdateDeveloper(Developer developer);
+
         void Save();
     }
 }

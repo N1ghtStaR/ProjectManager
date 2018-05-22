@@ -1,17 +1,24 @@
-﻿using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web.Mvc;
-using ProjectManagerDB;
-using ProjectManagerDB.Entities;
-
-namespace ProjectManager.Controllers
+﻿namespace ProjectManager.Controllers
 {
+    using System.Net;
+    using System.Web.Mvc;
+    using ProjectManagerDataAccess.Repositories.DeveloperRepository;
+    using ProjectManagerDB;
+    using ProjectManagerDB.Entities;
+
     public class AuthenticationController : Controller
     {
-        private ProjectManagerDbContext db = new ProjectManagerDbContext();
+        private IDeveloperRepository developerRepository;
+
+        public AuthenticationController()
+        {
+            this.developerRepository = new DeveloperRepository(new ProjectManagerDbContext());
+        }
+
+        public AuthenticationController(IDeveloperRepository developerRepository)
+        {
+            this.developerRepository = developerRepository;
+        }
 
         public ActionResult Registration()
         {
@@ -31,8 +38,8 @@ namespace ProjectManager.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    db.Developers.Add(developer);
-                    db.SaveChanges();
+                    developerRepository.InsertDeveloper(developer);
+                    developerRepository.Save();
 
                     Session["ID"] = developer.ID;
                     Session["Username"] = developer.Username;
@@ -68,9 +75,7 @@ namespace ProjectManager.Controllers
             {
                 try
                 {
-                    var developer = db.Developers
-                                        .Where(d => d.Username.Equals(username) && d.Password.Equals(password))
-                                        .Single();
+                    Developer developer = developerRepository.LogIn(username, password);
 
                     Session["ID"] = developer.ID;
                     Session["Username"] = developer.Username;
@@ -102,8 +107,8 @@ namespace ProjectManager.Controllers
 
             if (ModelState.IsValid)
             {
-                db.Entry(developer).State = EntityState.Modified;
-                db.SaveChanges();
+                developerRepository.UpdateDeveloper(developer);
+                developerRepository.Save();
             }
 
             return RedirectToAction("Index", "Home");
@@ -136,8 +141,8 @@ namespace ProjectManager.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-
-            Developer developer = db.Developers.Find(id);
+            int ID = (int)id;
+            Developer developer = developerRepository.GetDeveloperByID(ID);
             if (developer == null)
             {
                 return HttpNotFound();
@@ -161,7 +166,7 @@ namespace ProjectManager.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                developerRepository.Dispose();
             }
 
             base.Dispose(disposing);

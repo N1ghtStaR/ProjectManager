@@ -1,12 +1,11 @@
-﻿using ProjectManagerDataAccess.Repositories.DeveloperRepository;
-using ProjectManagerDB;
-using ProjectManagerDB.Entities;
-using System;
-using System.Linq;
-using System.Web.Mvc;
-
-namespace ProjectManager.Controllers
+﻿namespace ProjectManager.Controllers
 {
+    using ProjectManagerDataAccess.Repositories.DeveloperRepository;
+    using ProjectManagerDB;
+    using System;
+    using System.Linq;
+    using System.Web.Mvc;
+
     public class HomeController : Controller
     {
         private IDeveloperRepository developerRepository;
@@ -25,12 +24,16 @@ namespace ProjectManager.Controllers
         {
             if (!String.IsNullOrEmpty(developerUsername))
             {
-                var developersSearched = from s in developerRepository.GetDevelopersByUsername(developerUsername) select s;
+                var developersSearched = from entities 
+                                         in developerRepository.GetDevelopersByUsername(developerUsername)
+                                         select entities;
 
                 return View(developersSearched);
             }
 
-            var developers = from s in developerRepository.GetDevelopers() select s;
+            var developers = from entities 
+                             in developerRepository.GetDevelopers()
+                             select entities;
 
             return View(developers);
         }

@@ -37,6 +37,13 @@ namespace ProjectManagerDataAccess.Repositories.DeveloperRepository
                                 .Find(id);
         }
 
+        public Developer LogIn(string username, string password)
+        {
+            return Context.Developers
+                            .Where(d => d.Username.Equals(username) && d.Password.Equals(password))
+                            .Single();
+        }
+
         public void InsertDeveloper(Developer developer)
         {
             Context.Developers
