@@ -1,68 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web.Mvc;
-using ProjectManagerDB;
-using ProjectManagerDB.Entities;
-
-namespace ProjectManager.Controllers
+﻿namespace ProjectManager.Controllers
 {
+    using System;
+    using System.Net;
+    using System.Web.Mvc;
+    using ProjectManagerDataAccess.Repositories.DeveloperRepository;
+    using ProjectManagerDataAccess.Repositories.ProjectRepository;
+    using ProjectManagerDB;
+    using ProjectManagerDB.Entities;
+
     public class ProjectsController : Controller
     {
-        private ProjectManagerDbContext db = new ProjectManagerDbContext();
+        private IProjectRepository projectRepository;
 
-        public ActionResult List(string projectName)
+        public ProjectsController()
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }   
-            int id = (int)Session["ID"];
-
-            if(!String.IsNullOrEmpty(projectName))
-            {
-                return View(db.Projects
-                                .Where(p => p.DeveleperID.Equals(id))
-                                .Where(s => s.Title.Contains(projectName))
-                                .ToList());
-            }
-
-            return View(db.Projects
-                            .Where(p => p.DeveleperID.Equals(id))
-                            .ToList());
+            this.projectRepository = new ProjectRepository(new ProjectManagerDbContext());
         }
 
-        public ActionResult ListInProgress()
+        public ProjectsController(IProjectRepository projectRepository)
+        {
+            this.projectRepository = projectRepository;
+        }
+
+        public ActionResult Index(string projectTitle)
         {
             if(Session["ID"] == null)
             {
                 return RedirectToAction("LogIn", "Authentication");
             }
+            
             int id = (int)Session["ID"];
 
-            var projects = db.Projects
-                                .Where(p => p.Status.ToString().Equals("InProgress"))
-                                .Where(d => d.DeveleperID.Equals(id));
+            if(!String.IsNullOrEmpty(projectTitle))
+            {
+                return View(projectRepository.GetProjectsByTitle(projectTitle, id));
+            }
 
-            return View("List", projects.ToList());
+            return View(projectRepository.GetAllProjectsForUser(id));
         }
-
-        public ActionResult Ready()
+        
+        public ActionResult Status(string status)
         {
-            if (Session["ID"] == null)
+            if(Session["ID"] == null)
             {
                 return RedirectToAction("LogIn", "Authentication");
             }
+
             int id = (int)Session["ID"];
 
-            var projects = db.Projects
-                                .Where(p => p.Status.ToString().Equals("Ready"))
-                                .Where(d => d.DeveleperID.Equals(id));
-
-            return View("List", projects.ToList());
+            return View("Index", projectRepository.GetProjectsByStatus(status, id));
         }
+
 
         public ActionResult Create()
         {
@@ -70,25 +58,24 @@ namespace ProjectManager.Controllers
             {
                 return RedirectToAction("LogIn", "Authentication");
             }
-
-            ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", Session["ID"]);
+            ViewBag.Owner = Session["ID"];
 
             return View();
         }
-
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] Project project)
+        public ActionResult Create([Bind(Include = "ID,DeveloperID,Title,Description,Category,Status")] Project project)
         {
             if (ModelState.IsValid)
             {
-                db.Projects.Add(project);
-                db.SaveChanges();
+                projectRepository.Create(project);
+                projectRepository.Save();
             }
 
             return RedirectToAction("List", "Projects");
         }
-
+       
         public ActionResult Confirm(int? id)
         {
             if(Session["ID"] == null)
@@ -100,21 +87,23 @@ namespace ProjectManager.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Project project = db.Projects.Find(id);
+            int ID = (int)id;
+            Project project = projectRepository.GetProjectByID(ID);
 
             if (project == null)
             {
                 return HttpNotFound();
             }
 
-            ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", project.DeveleperID);
+            ViewBag.Status = "Ready";
+            ViewBag.Owner = Session["ID"];
 
             Session["ProjectID"] = id;
-            ViewBag.Status = "Ready";
+            
 
             return View("Confirm", project);
         }
-
+/*
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Update([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] Project project)
@@ -153,7 +142,7 @@ namespace ProjectManager.Controllers
 
             return View(project);
         }
-
+*/
         public ActionResult Edit(int? id)
         {
             if(Session["ID"] == null)
@@ -165,14 +154,15 @@ namespace ProjectManager.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Project project = db.Projects.Find(id);
+            int ID = (int)id;
+            Project project = projectRepository.GetProjectByID(ID);
 
             if (project == null)
             {
                 return HttpNotFound();
             }
 
-            ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", project.DeveleperID);
+            ViewBag.Owner = Session["ID"];
 
             return View(project);
         }
@@ -183,13 +173,13 @@ namespace ProjectManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(project).State = EntityState.Modified;
-                db.SaveChanges();
+                projectRepository.Update(project);
+                projectRepository.Save();
 
-                return RedirectToAction("List", "Projects");
+                return RedirectToAction("Index", "Projects");
             }
 
-            ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", project.DeveleperID);
+            ViewBag.Owner = Session["ID"];
 
             return View(project);
         }
@@ -205,7 +195,8 @@ namespace ProjectManager.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Project project = db.Projects.Find(id);
+            int ID = (int)id;
+            Project project = projectRepository.GetProjectByID(ID);
 
             if (project == null)
             {
@@ -214,24 +205,23 @@ namespace ProjectManager.Controllers
 
             return View(project);
         }
-
+/*
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Project project = db.Projects.Find(id);
+            Project project = projectRepository.GetProjectByID(id);
+            projectRepository.Delete(project);
+            projectRepository.Save();
 
-            db.Projects.Remove(project);
-            db.SaveChanges();
-
-            return RedirectToAction("List", "Projects");
+            return RedirectToAction("Index", "Projects");
         }
-
+*/
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                projectRepository.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -17,11 +17,12 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ID)
 
-        <div class="form-group hidden">
+        <div class="form-group">
             @Html.LabelFor(model => model.DeveleperID, "DeveleperID", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("DeveleperID", null, htmlAttributes: new { @class = "form-control" })
+                <input type="text" class="form-control" name="DeveloperID" value="@ViewBag.Owner" />
                 @Html.ValidationMessageFor(model => model.DeveleperID, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.ID, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
 

@@ -88,13 +88,13 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="@Url.Action("List", "Projects")" class="dropdown-item">Show all</a>
+                                <a href="@Url.Action("Index", "Projects")" class="dropdown-item">Show all</a>
                             </li>
                             <li>
-                                <a href="@Url.Action("ListInProgress", "Projects")" class="dropdown-item">In Progress</a>
+                                <a href="@Url.Action("Status", "Projects", new { status = "InProgress" })" class="dropdown-item">In Progress</a>
                             </li>
                             <li>
-                                <a href="@Url.Action("Ready", "Projects")" class="dropdown-item">Ready</a>
+                                <a href="@Url.Action("Status", "Projects", new { status = "Ready" })" class="dropdown-item">Ready</a>
                             </li>
                         </ul>
                     </div>

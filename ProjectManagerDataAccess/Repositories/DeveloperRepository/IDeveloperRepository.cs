@@ -6,14 +6,14 @@
 
     public interface IDeveloperRepository : IDisposable
     {
-        IEnumerable<Developer> GetDevelopers();
+        IEnumerable<Developer> GetAllDevelopers();
         IEnumerable<Developer> GetDevelopersByUsername(string username);
 
         Developer LogIn(string username, string password);
         Developer GetDeveloperByID(int developerID);
 
-        void InsertDeveloper(Developer developer);
-        void UpdateDeveloper(Developer developer);
+        void Registration(Developer developer);
+        void PromoteOrDemote(Developer developer);
 
         void Save();
     }

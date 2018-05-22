@@ -25,7 +25,7 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     @if (Session["ID"] != null)
                     {
-                        <li><a href="@Url.Action("List", "Projects")">Projects</a></li>
+                        <li><a href="@Url.Action("Index", "Projects")">Projects</a></li>
                         <li><a href="@Url.Action("List", "Incomes")">Incomes</a></li>
                     }
                 </ul>

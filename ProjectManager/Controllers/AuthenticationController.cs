@@ -9,16 +9,8 @@
     public class AuthenticationController : Controller
     {
         private IDeveloperRepository developerRepository;
-
-        public AuthenticationController()
-        {
-            this.developerRepository = new DeveloperRepository(new ProjectManagerDbContext());
-        }
-
-        public AuthenticationController(IDeveloperRepository developerRepository)
-        {
-            this.developerRepository = developerRepository;
-        }
+        public AuthenticationController() => this.developerRepository = new DeveloperRepository(new ProjectManagerDbContext());
+        public AuthenticationController(IDeveloperRepository developerRepository) => this.developerRepository = developerRepository;
 
         public ActionResult Registration()
         {
@@ -26,7 +18,6 @@
             {
                 return View();
             }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -38,7 +29,7 @@
             {
                 if (ModelState.IsValid)
                 {
-                    developerRepository.InsertDeveloper(developer);
+                    developerRepository.Registration(developer);
                     developerRepository.Save();
 
                     Session["ID"] = developer.ID;
@@ -51,10 +42,8 @@
 
                     return RedirectToAction("Index", "Home");
                 }
-
                 return View(developer);
             }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -64,7 +53,6 @@
             {
                 return View();
             }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -92,7 +80,6 @@
                     ModelState.AddModelError("", "Login data is incorrect!");
                 }
             }
-
             return View();
         }
 
@@ -105,11 +92,8 @@
                 return RedirectToAction("Index", "Home");
             }
 
-            if (ModelState.IsValid)
-            {
-                developerRepository.UpdateDeveloper(developer);
-                developerRepository.Save();
-            }
+            developerRepository.PromoteOrDemote(developer);
+            developerRepository.Save();
 
             return RedirectToAction("Index", "Home");
         }
@@ -126,7 +110,6 @@
                 Session["ProjectTitle"] = null;
                 Session["ProjectStatus"] = null;
             }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -158,7 +141,6 @@
                 ViewBag.SubmitValue = "Demote";
                 ViewBag.RoleValue = "Developer";
             }
-
             return View(developer);
         }
 
@@ -168,7 +150,6 @@
             {
                 developerRepository.Dispose();
             }
-
             base.Dispose(disposing);
         }
     }

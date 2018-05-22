@@ -52,6 +52,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\DeveloperRepository\DeveloperRepository.cs" />
     <Compile Include="Repositories\DeveloperRepository\IDeveloperRepository.cs" />
+    <Compile Include="Repositories\ProjectRepository\IProjectRepository.cs" />
+    <Compile Include="Repositories\ProjectRepository\ProjectRepository.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

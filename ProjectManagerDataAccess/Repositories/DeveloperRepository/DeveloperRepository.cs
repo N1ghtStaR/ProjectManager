@@ -12,13 +12,14 @@ namespace ProjectManagerDataAccess.Repositories.DeveloperRepository
     public class DeveloperRepository : IDeveloperRepository , IDisposable
     {
         private readonly ProjectManagerDbContext Context;
+        private bool disposed = false;
 
         public DeveloperRepository(ProjectManagerDbContext context)
         {
             this.Context = context;
         }
 
-        public IEnumerable<Developer> GetDevelopers()
+        public IEnumerable<Developer> GetAllDevelopers()
         {
             return Context.Developers
                                 .ToList();
@@ -40,25 +41,18 @@ namespace ProjectManagerDataAccess.Repositories.DeveloperRepository
         public Developer LogIn(string username, string password)
         {
             return Context.Developers
-                            .Where(d => d.Username.Equals(username) && d.Password.Equals(password))
-                            .Single();
+                                .Where(d => d.Username.Equals(username) && d.Password.Equals(password))
+                                .Single();
         }
 
-        public void InsertDeveloper(Developer developer)
+        public void Registration(Developer developer)
         {
             Context.Developers
-                            .Add(developer);
+                        .Add(developer);
         }
 
-        public void DeleteDeveloper(int developerID)
-        {
-            Developer developer = Context.Developers
-                                            .Find(developerID);
-            Context.Developers
-                        .Remove(developer);
-        }
 
-        public void UpdateDeveloper(Developer developer)
+        public void PromoteOrDemote(Developer developer)
         {
             Context.Entry(developer).State = EntityState.Modified;
         }
@@ -67,8 +61,6 @@ namespace ProjectManagerDataAccess.Repositories.DeveloperRepository
         {
             Context.SaveChanges();
         }
-
-        private bool disposed = false;
 
         protected virtual void Dispose(bool disposing)
         {
