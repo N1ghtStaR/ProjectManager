@@ -203,9 +203,8 @@
     <Content Include="Views\Projects\Edit.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
     <Content Include="Views\Tasks\Create.cshtml" />
-    <Content Include="Views\Tasks\Delete.cshtml" />
     <Content Include="Views\Tasks\Edit.cshtml" />
-    <Content Include="Views\Tasks\List.cshtml" />
+    <Content Include="Views\Tasks\Index.cshtml" />
     <Content Include="Views\Incomes\Create.cshtml" />
     <Content Include="Views\Incomes\List.cshtml" />
     <Content Include="Views\Projects\Confirm.cshtml" />

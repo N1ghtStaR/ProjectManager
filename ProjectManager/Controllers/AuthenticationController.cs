@@ -2,15 +2,22 @@
 {
     using System.Net;
     using System.Web.Mvc;
-    using ProjectManagerDataAccess.Repositories.DeveloperRepository;
+    using ProjectManagerDataAccess;
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
 
     public class AuthenticationController : Controller
     {
-        private IDeveloperRepository developerRepository;
-        public AuthenticationController() => this.developerRepository = new DeveloperRepository(new ProjectManagerDbContext());
-        public AuthenticationController(IDeveloperRepository developerRepository) => this.developerRepository = developerRepository;
+        private readonly UnitOfWork uow;
+
+        public AuthenticationController()
+        {
+            this.uow = new UnitOfWork(new ProjectManagerDbContext());
+        }
+        public AuthenticationController(ProjectManagerDbContext context)
+        {
+            uow = new UnitOfWork(context);
+        }
 
         public ActionResult Registration()
         {
@@ -18,6 +25,7 @@
             {
                 return View();
             }
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -29,8 +37,8 @@
             {
                 if (ModelState.IsValid)
                 {
-                    developerRepository.Registration(developer);
-                    developerRepository.Save();
+                    uow.DeveloperRepository.Registration(developer);
+                    uow.DeveloperRepository.Save();
 
                     Session["ID"] = developer.ID;
                     Session["Username"] = developer.Username;
@@ -42,8 +50,10 @@
 
                     return RedirectToAction("Index", "Home");
                 }
+
                 return View(developer);
             }
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -53,6 +63,7 @@
             {
                 return View();
             }
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -63,7 +74,7 @@
             {
                 try
                 {
-                    Developer developer = developerRepository.LogIn(username, password);
+                    Developer developer = uow.DeveloperRepository.LogIn(username, password);
 
                     Session["ID"] = developer.ID;
                     Session["Username"] = developer.Username;
@@ -80,6 +91,7 @@
                     ModelState.AddModelError("", "Login data is incorrect!");
                 }
             }
+
             return View();
         }
 
@@ -92,8 +104,8 @@
                 return RedirectToAction("Index", "Home");
             }
 
-            developerRepository.PromoteOrDemote(developer);
-            developerRepository.Save();
+            uow.DeveloperRepository.PromoteOrDemote(developer);
+            uow.DeveloperRepository.Save();
 
             return RedirectToAction("Index", "Home");
         }
@@ -110,6 +122,7 @@
                 Session["ProjectTitle"] = null;
                 Session["ProjectStatus"] = null;
             }
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -125,7 +138,9 @@
             }
 
             int ID = (int)id;
-            Developer developer = developerRepository.GetDeveloperByID(ID);
+
+            Developer developer = uow.DeveloperRepository.GetDeveloperByID(ID);
+
             if (developer == null)
             {
                 return HttpNotFound();
@@ -141,6 +156,7 @@
                 ViewBag.SubmitValue = "Demote";
                 ViewBag.RoleValue = "Developer";
             }
+
             return View(developer);
         }
 
@@ -148,8 +164,9 @@
         {
             if (disposing)
             {
-                developerRepository.Dispose();
+                uow.DeveloperRepository.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

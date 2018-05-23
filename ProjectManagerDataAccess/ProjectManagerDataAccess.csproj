@@ -58,6 +58,7 @@
     <Compile Include="Repositories\ProjectRepository\ProjectRepository.cs" />
     <Compile Include="Repositories\TaskRepository\ITaskRepository.cs" />
     <Compile Include="Repositories\TaskRepository\TaskRepository.cs" />
+    <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

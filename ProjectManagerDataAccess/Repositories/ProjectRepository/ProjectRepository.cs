@@ -56,15 +56,14 @@ namespace ProjectManagerDataAccess.Repositories.ProjectRepository
         {
             Context.Entry(project).State = EntityState.Modified;
         }
+        public void Delete(Project project)
+        {
+            Context.Projects.Remove(project);
+        }
 
         public void Save()
         {
             Context.SaveChanges();
-        }
-
-        public void Delete(Project project)
-        {
-            Context.Projects.Remove(project);
         }
 
         protected virtual void Dispose(bool disposing)

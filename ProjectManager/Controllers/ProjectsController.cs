@@ -3,23 +3,22 @@
     using System;
     using System.Net;
     using System.Web.Mvc;
-    using ProjectManagerDataAccess.Repositories.DeveloperRepository;
-    using ProjectManagerDataAccess.Repositories.ProjectRepository;
+    using ProjectManagerDataAccess;
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
 
     public class ProjectsController : Controller
     {
-        private IProjectRepository projectRepository;
+        private readonly UnitOfWork uow;
 
         public ProjectsController()
         {
-            this.projectRepository = new ProjectRepository(new ProjectManagerDbContext());
+            this.uow = new UnitOfWork(new ProjectManagerDbContext());
         }
 
-        public ProjectsController(IProjectRepository projectRepository)
+        public ProjectsController(ProjectManagerDbContext context)
         {
-            this.projectRepository = projectRepository;
+            uow = new UnitOfWork(context);
         }
 
         public ActionResult Index(string projectTitle)
@@ -33,10 +32,10 @@
 
             if(!String.IsNullOrEmpty(projectTitle))
             {
-                return View(projectRepository.GetProjectsByTitle(projectTitle, id));
+                return View(uow.ProjectRepository.GetProjectsByTitle(projectTitle, id));
             }
 
-            return View(projectRepository.GetAllProjectsForUser(id));
+            return View(uow.ProjectRepository.GetAllProjectsForUser(id));
         }
         
         public ActionResult Status(string status)
@@ -48,7 +47,7 @@
 
             int id = (int)Session["ID"];
 
-            return View("Index", projectRepository.GetProjectsByStatus(status, id));
+            return View("Index", uow.ProjectRepository.GetProjectsByStatus(status, id));
         }
 
 
@@ -58,6 +57,7 @@
             {
                 return RedirectToAction("LogIn", "Authentication");
             }
+
             ViewBag.Owner = Session["ID"];
 
             return View();
@@ -69,8 +69,8 @@
         {
             if (ModelState.IsValid)
             {
-                projectRepository.Create(project);
-                projectRepository.Save();
+                uow.ProjectRepository.Create(project);
+                uow.ProjectRepository.Save();
 
                 return RedirectToAction("Index", "Projects");
             }
@@ -90,7 +90,8 @@
             }
 
             int ID = (int)id;
-            Project project = projectRepository.GetProjectByID(ID);
+
+            Project project = uow.ProjectRepository.GetProjectByID(ID);
 
             if (project == null)
             {
@@ -101,11 +102,10 @@
             ViewBag.Owner = Session["ID"];
 
             Session["ProjectID"] = id;
-            
 
             return View("Confirm", project);
         }
-/*
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Update([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] Project project)
@@ -118,8 +118,8 @@
             if (ModelState.IsValid)
             {
                 int id = (int)Session["ID"];
-                var tasks = db.Tasks
-                                .Where(p => p.ProjectID.Equals(id));
+
+                var tasks = uow.TaskRepository.GetAllTaskForProject(id);
 
                 if (tasks != null)
                 {
@@ -132,19 +132,19 @@
                     }
                 }
 
-                db.Entry(project).State = EntityState.Modified;
-                db.SaveChanges();
+                uow.ProjectRepository.Update(project);
+                uow.ProjectRepository.Save();
 
                 Session["ProjectID"] = project.ID;
 
                 return RedirectToAction("Create", "Incomes");
             }
 
-            ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", project.DeveleperID);
+            ViewBag.Owner = Session["ID"];
 
             return View(project);
         }
-*/
+
         public ActionResult Edit(int? id)
         {
             if(Session["ID"] == null)
@@ -157,7 +157,8 @@
             }
 
             int ID = (int)id;
-            Project project = projectRepository.GetProjectByID(ID);
+
+            Project project = uow.ProjectRepository.GetProjectByID(ID);
 
             if (project == null)
             {
@@ -175,8 +176,8 @@
         {
             if (ModelState.IsValid)
             {
-                projectRepository.Update(project);
-                projectRepository.Save();
+                uow.ProjectRepository.Update(project);
+                uow.ProjectRepository.Save();
 
                 return RedirectToAction("Index", "Projects");
             }
@@ -198,7 +199,8 @@
             }
 
             int ID = (int)id;
-            Project project = projectRepository.GetProjectByID(ID);
+
+            Project project = uow.ProjectRepository.GetProjectByID(ID);
 
             if (project == null)
             {
@@ -207,24 +209,32 @@
 
             return View(project);
         }
-/*
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Project project = projectRepository.GetProjectByID(id);
-            projectRepository.Delete(project);
-            projectRepository.Save();
+            Project project = uow.ProjectRepository.GetProjectByID(id);
+            var tasks = uow.TaskRepository.GetAllTaskForProject(id);
+
+            foreach(var task in tasks)
+            {
+                uow.TaskRepository.Delete(task);
+                uow.TaskRepository.Save();
+            }
+            uow.ProjectRepository.Delete(project);
+            uow.ProjectRepository.Save();
 
             return RedirectToAction("Index", "Projects");
         }
-*/
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                projectRepository.Dispose();
+                uow.ProjectRepository.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

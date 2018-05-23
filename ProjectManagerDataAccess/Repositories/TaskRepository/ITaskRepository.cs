@@ -4,7 +4,7 @@
     using System;
 
     using System.Collections.Generic;
-    interface ITaskRepository : IDisposable
+    public interface ITaskRepository : IDisposable
     {
         IEnumerable<Task> GetAllTaskForProject(int id);
         IEnumerable<Task> GetTasksByStatus(string status);
@@ -13,6 +13,7 @@
 
         void Create(Task task);
         void Update(Task task);
+        void Delete(Task task);
         void Save();
     }
 }

@@ -8,7 +8,7 @@
     using System.Linq;
     using System.Text;
 
-    class TaskRepository : ITaskRepository , IDisposable
+    public class TaskRepository : ITaskRepository , IDisposable
     {
         private readonly ProjectManagerDbContext Context;
         private bool disposed = false;
@@ -47,6 +47,12 @@
         public void Update(Task task)
         {
             Context.Entry(task).State = EntityState.Modified;
+        }
+
+        public void Delete(Task task)
+        {
+            Context.Tasks
+                        .Remove(task);
         }
 
         public void Save()

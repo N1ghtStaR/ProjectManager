@@ -4,7 +4,7 @@
     using System;
     using System.Collections.Generic;
 
-    interface IIncomeRepository : IDisposable
+    public interface IIncomeRepository : IDisposable
     {
         IEnumerable<Income> GetIncomesForUser(int id);
 

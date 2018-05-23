@@ -6,7 +6,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    class IncomeRepository : IIncomeRepository , IDisposable
+    public class IncomeRepository : IIncomeRepository , IDisposable
     {
         private readonly ProjectManagerDbContext Context;
         private bool disposed = false;

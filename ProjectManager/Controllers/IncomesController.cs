@@ -1,15 +1,29 @@
-﻿using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Web.Mvc;
-using ProjectManagerDB;
-using ProjectManagerDB.Entities;
-
-namespace ProjectManager.Controllers
+﻿namespace ProjectManager.Controllers
 {
+    using System.Web.Mvc;
+    using ProjectManagerDataAccess.Repositories.DeveloperRepository;
+    using ProjectManagerDataAccess.Repositories.IncomeRepository;
+    using ProjectManagerDataAccess.Repositories.ProjectRepository;
+    using ProjectManagerDB;
+
+    using ProjectManagerDB.Entities;
     public class IncomesController : Controller
     {
-        private ProjectManagerDbContext db = new ProjectManagerDbContext();
+        private IIncomeRepository incomeRepository;
+        private IDeveloperRepository developerRepository;
+        private IProjectRepository projectRepository;
+
+        public IncomesController()
+        {
+            this.incomeRepository = new IncomeRepository(new ProjectManagerDbContext());
+        }
+
+        public IncomesController(IIncomeRepository incomeRepository, IDeveloperRepository developerRepository, IProjectRepository projectRepository)
+        {
+            this.incomeRepository = incomeRepository;
+            this.developerRepository = developerRepository;
+            this.projectRepository = projectRepository;
+        }
 
         public ActionResult FindIncomes(int? id)
         {
@@ -18,30 +32,26 @@ namespace ProjectManager.Controllers
                 return HttpNotFound();
             }
             Session["ProjectID"] = id;
-            return RedirectToAction("List");
+            return RedirectToAction("Index");
         }
 
-        public ActionResult List()
+        public ActionResult Index()
         {
             int id = (int)Session["ID"];
-            var incomes = db.Incomes
-                        .Include(i => i.Develeper)
-                        .Include(i => i.Project)
-                        .Where(i => i.DeveleperID.Equals(id));
-            return View(incomes.ToList());
+            return View(incomeRepository.GetIncomesForUser(id));
         }
 
         public ActionResult Create()
         {
             int id = (int)Session["ProjectID"];
 
-            Project project = db.Projects.Find(id);
+            Project project = projectRepository.GetProjectByID(id);
 
             ViewBag.ProjectName = project.Title;
+            ViewBag.OwnerProject = Session["ProjectID"];
+            ViewBag.OwnerDeveloper = Session["ID"];
 
-            ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", Session["ID"]);
-            ViewBag.ProjectID = new SelectList(db.Projects, "ID", "Title", Session["ProjectID"]);
-            return View();
+            return View(projectRepository.GetProjectByID(id));
         }
 
         [HttpPost]
@@ -50,13 +60,14 @@ namespace ProjectManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Incomes.Add(income);
-                db.SaveChanges();
+                incomeRepository.Create(income);
+                incomeRepository.Save();
+
                 return RedirectToAction("Index");
             }
 
-            ViewBag.DeveleperID = new SelectList(db.Developers, "ID", "Username", income.DeveleperID);
-            ViewBag.ProjectID = new SelectList(db.Projects, "ID", "Title", income.ProjectID);
+            ViewBag.OwnerDeveloper = Session["ID"];
+            ViewBag.OwnerProject = Session["ProjectID"];
             return View(income);
         }
 
@@ -71,7 +82,8 @@ namespace ProjectManager.Controllers
                 return RedirectToAction("List", "Projects");
             }
 
-            Income income = db.Incomes.Find(id);
+            int ID = (int)Session["ID"];
+            Income income = incomeRepository.GetIncomeByID(ID);
 
             if (income == null)
             {
@@ -85,7 +97,7 @@ namespace ProjectManager.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                incomeRepository.Dispose();
             }
             base.Dispose(disposing);
         }

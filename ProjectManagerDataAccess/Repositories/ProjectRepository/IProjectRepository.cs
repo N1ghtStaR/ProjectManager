@@ -16,7 +16,7 @@
 
         void Create(Project project);
         void Update(Project project);
-        //void Delete(Project project);
+        void Delete(Project project);
         void Save();
     }
 }

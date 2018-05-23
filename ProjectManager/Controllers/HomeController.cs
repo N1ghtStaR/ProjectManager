@@ -1,25 +1,31 @@
 ﻿namespace ProjectManager.Controllers
 {
-    using ProjectManagerDataAccess.Repositories.DeveloperRepository;
+    using ProjectManagerDataAccess;
     using ProjectManagerDB;
-    using ProjectManagerDB.Entities;
     using System;
-    using System.Linq;
     using System.Web.Mvc;
 
     public class HomeController : Controller
     {
-        private IDeveloperRepository developerRepository;
-        public HomeController() => this.developerRepository = new DeveloperRepository(new ProjectManagerDbContext());
-        public HomeController(IDeveloperRepository developerRepository) => this.developerRepository = developerRepository;
+        private readonly UnitOfWork uow;
+
+        public HomeController()
+        {
+            this.uow = new UnitOfWork(new ProjectManagerDbContext());
+        }
+
+        public HomeController(ProjectManagerDbContext context)
+        {
+            uow = new UnitOfWork(context);
+        }
 
         public ActionResult Index(string developerUsername)
         {
             if (!String.IsNullOrEmpty(developerUsername))
             { 
-                return View(developerRepository.GetDevelopersByUsername(developerUsername));
+                return View(uow.DeveloperRepository.GetDevelopersByUsername(developerUsername));
             }
-            return View(developerRepository.GetAllDevelopers());
+            return View(uow.DeveloperRepository.GetAllDevelopers());
         }
     }
 }
