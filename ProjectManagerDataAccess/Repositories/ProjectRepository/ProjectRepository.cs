@@ -67,8 +67,6 @@ namespace ProjectManagerDataAccess.Repositories.ProjectRepository
             Context.Projects.Remove(project);
         }
 
-
-
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)

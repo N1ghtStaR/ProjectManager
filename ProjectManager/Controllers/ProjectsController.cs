@@ -65,15 +65,17 @@
        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,DeveloperID,Title,Description,Category,Status")] Project project)
+        public ActionResult Create([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] Project project)
         {
             if (ModelState.IsValid)
             {
                 projectRepository.Create(project);
                 projectRepository.Save();
+
+                return RedirectToAction("Index", "Projects");
             }
 
-            return RedirectToAction("List", "Projects");
+            return View(project);
         }
        
         public ActionResult Confirm(int? id)
