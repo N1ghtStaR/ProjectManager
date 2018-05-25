@@ -206,7 +206,7 @@
     <Content Include="Views\Tasks\Edit.cshtml" />
     <Content Include="Views\Tasks\Index.cshtml" />
     <Content Include="Views\Incomes\Create.cshtml" />
-    <Content Include="Views\Incomes\List.cshtml" />
+    <Content Include="Views\Incomes\Index.cshtml" />
     <Content Include="Views\Projects\Confirm.cshtml" />
     <Content Include="Views\Incomes\Details.cshtml" />
     <Content Include="Views\Tasks\Confirm.cshtml" />

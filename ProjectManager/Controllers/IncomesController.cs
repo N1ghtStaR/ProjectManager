@@ -1,6 +1,7 @@
 ﻿namespace ProjectManager.Controllers
 {
     using System.Web.Mvc;
+    using ProjectManagerDataAccess;
     using ProjectManagerDataAccess.Repositories.DeveloperRepository;
     using ProjectManagerDataAccess.Repositories.IncomeRepository;
     using ProjectManagerDataAccess.Repositories.ProjectRepository;
@@ -9,49 +10,58 @@
     using ProjectManagerDB.Entities;
     public class IncomesController : Controller
     {
-        private IIncomeRepository incomeRepository;
-        private IDeveloperRepository developerRepository;
-        private IProjectRepository projectRepository;
+        private readonly UnitOfWork uow;
 
         public IncomesController()
         {
-            this.incomeRepository = new IncomeRepository(new ProjectManagerDbContext());
+            this.uow = new UnitOfWork(new ProjectManagerDbContext());
         }
 
-        public IncomesController(IIncomeRepository incomeRepository, IDeveloperRepository developerRepository, IProjectRepository projectRepository)
+        public IncomesController(ProjectManagerDbContext context)
         {
-            this.incomeRepository = incomeRepository;
-            this.developerRepository = developerRepository;
-            this.projectRepository = projectRepository;
+            uow = new UnitOfWork(context);
         }
 
         public ActionResult FindIncomes(int? id)
         {
-            if(id == null)
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+            else if (id == null)
             {
                 return HttpNotFound();
             }
+
             Session["ProjectID"] = id;
+
             return RedirectToAction("Index");
         }
 
         public ActionResult Index()
         {
-            int id = (int)Session["ID"];
-            return View(incomeRepository.GetIncomesForUser(id));
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
+
+            return View(uow.IncomeRepository.GetIncomesForUser((int)Session["ID"]));
         }
 
         public ActionResult Create()
         {
-            int id = (int)Session["ProjectID"];
+            if (Session["ID"] == null)
+            {
+                return RedirectToAction("LogIn", "Authentication");
+            }
 
-            Project project = projectRepository.GetProjectByID(id);
+            Project project = uow.ProjectRepository.GetProjectByID((int)Session["ProjectID"]);
 
             ViewBag.ProjectName = project.Title;
             ViewBag.OwnerProject = Session["ProjectID"];
             ViewBag.OwnerDeveloper = Session["ID"];
 
-            return View(projectRepository.GetProjectByID(id));
+            return View();
         }
 
         [HttpPost]
@@ -60,8 +70,8 @@
         {
             if (ModelState.IsValid)
             {
-                incomeRepository.Create(income);
-                incomeRepository.Save();
+                uow.IncomeRepository.Create(income);
+                uow.IncomeRepository.Save();
 
                 return RedirectToAction("Index");
             }
@@ -82,8 +92,7 @@
                 return RedirectToAction("List", "Projects");
             }
 
-            int ID = (int)Session["ID"];
-            Income income = incomeRepository.GetIncomeByID(ID);
+            Income income = uow.IncomeRepository.GetIncomeByID((int)id);
 
             if (income == null)
             {
@@ -97,7 +106,7 @@
         {
             if (disposing)
             {
-                incomeRepository.Dispose();
+                uow.IncomeRepository.Dispose();
             }
             base.Dispose(disposing);
         }

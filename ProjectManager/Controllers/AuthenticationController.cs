@@ -70,6 +70,11 @@
         [HttpPost]
         public ActionResult LogIn(string username, string password)
         {
+            if(Session["ID"] != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             if(ModelState.IsValid)
             {
                 try

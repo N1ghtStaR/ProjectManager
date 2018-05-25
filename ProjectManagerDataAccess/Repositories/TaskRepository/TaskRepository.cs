@@ -25,10 +25,10 @@
                             .ToList();
         }
 
-        public IEnumerable<Task> GetTasksByStatus(string status)
+        public IEnumerable<Task> GetTasksByStatus(int id, string status)
         {
             return Context.Tasks
-                            .Where(t => t.Status.ToString().Equals(status))
+                            .Where(t => t.Status.ToString().Equals(status) && t.ProjectID.Equals(id))
                             .ToList();
         }
 

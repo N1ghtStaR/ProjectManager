@@ -25,6 +25,7 @@
             { 
                 return View(uow.DeveloperRepository.GetDevelopersByUsername(developerUsername));
             }
+
             return View(uow.DeveloperRepository.GetAllDevelopers());
         }
     }

@@ -7,7 +7,7 @@
     public interface ITaskRepository : IDisposable
     {
         IEnumerable<Task> GetAllTaskForProject(int id);
-        IEnumerable<Task> GetTasksByStatus(string status);
+        IEnumerable<Task> GetTasksByStatus(int id, string status);
 
         Task GetTaskByID(int id);
 

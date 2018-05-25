@@ -2,26 +2,22 @@
 {
     using System.Net;
     using System.Web.Mvc;
-    using ProjectManagerDataAccess.Repositories.ProjectRepository;
-    using ProjectManagerDataAccess.Repositories.TaskRepository;
+    using ProjectManagerDataAccess;
     using ProjectManagerDB;
 
     using ProjectManagerDB.Entities;
     public class TasksController : Controller
     {
-        private ITaskRepository taskRepository;
-        private IProjectRepository projectRepository;
+        private readonly UnitOfWork uow;
 
         public TasksController()
         {
-            this.taskRepository = new TaskRepository(new ProjectManagerDbContext());
-            this.projectRepository = new ProjectRepository(new ProjectManagerDbContext());
+            this.uow = new UnitOfWork(new ProjectManagerDbContext());
         }
 
-        public TasksController(ITaskRepository taskRepository, IProjectRepository projectRepository)
+        public TasksController(ProjectManagerDbContext context)
         {
-            this.taskRepository = taskRepository;
-            this.projectRepository = projectRepository;
+            uow = new UnitOfWork(context);
         }
 
         public ActionResult FindTasks(int? id, string title)
@@ -31,8 +27,7 @@
                 return HttpNotFound();
             }
 
-            int ID = (int)id;
-            Project project = projectRepository.GetProjectByID(ID);
+            Project project = uow.ProjectRepository.GetProjectByID((int)id);
 
             Session["ProjectID"] = id;
             Session["ProjectTitle"] = title;
@@ -47,9 +42,8 @@
             {
                 return RedirectToAction("LogIn", "Authentication");
             }
-            int id = (int)Session["ProjectID"];
 
-            return View(taskRepository.GetAllTaskForProject(id));
+            return View(uow.TaskRepository.GetAllTaskForProject((int)Session["ProjectID"]));
         }
 
         public ActionResult Status (string status)
@@ -58,9 +52,8 @@
             {
                 return RedirectToAction("LogIn", "Authentication");
             }
-            int id = (int)Session["ProjectID"];
 
-            return View("Index", taskRepository.GetTasksByStatus(status));
+            return View("Index", uow.TaskRepository.GetTasksByStatus((int)Session["ProjectID"], status));
         }
 
         public ActionResult Create()
@@ -71,7 +64,7 @@
             }
             else if(Session["ProjectStatus"].ToString().Equals("Ready"))
             {
-                return RedirectToAction("List", "Task");
+                return RedirectToAction("Index", "Task");
             }
 
             ViewBag.Owner = Session["ProjectID"];
@@ -90,15 +83,13 @@
 
             if (ModelState.IsValid)
             {
-                taskRepository.Create(task);
-                taskRepository.Save();
-            }
-            else
-            {
-                ViewBag.Owner = Session["ProjectID"];
+                uow.TaskRepository.Create(task);
+                uow.TaskRepository.Save();
             }
 
-            return RedirectToAction("List", "Tasks");
+            ViewBag.Owner = Session["ProjectID"];
+
+            return RedirectToAction("Index", "Tasks");
         }
 
         public ActionResult Edit(int? id)
@@ -108,8 +99,7 @@
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            int ID = (int)id;
-            Task task = taskRepository.GetTaskByID(ID);
+            Task task = uow.TaskRepository.GetTaskByID((int)id);
 
             if (task == null)
             {
@@ -132,8 +122,8 @@
 
             if (ModelState.IsValid)
             {
-                taskRepository.Update(task);
-                taskRepository.Save();
+                uow.TaskRepository.Update(task);
+                uow.TaskRepository.Save();
 
                 return RedirectToAction("Index", "Tasks");
             }
@@ -151,11 +141,11 @@
             }
             else if (id == null)
             {
-                return RedirectToAction("List", "Tasks");
+                return RedirectToAction("Index", "Tasks");
             }
 
-            int ID = (int)id;
-            Task task = taskRepository.GetTaskByID(ID);
+            Task task = uow.TaskRepository.GetTaskByID((int)id);
+
             if(task == null)
             {
                 return HttpNotFound();
@@ -178,8 +168,8 @@
 
             if (ModelState.IsValid)
             {
-                taskRepository.Update(task);
-                taskRepository.Save();
+                uow.TaskRepository.Update(task);
+                uow.TaskRepository.Save();
 
                 return RedirectToAction("Index", "Tasks");
             }
@@ -191,7 +181,7 @@
         {
             if (disposing)
             {
-                taskRepository.Dispose();
+                uow.TaskRepository.Dispose();
             }
 
             base.Dispose(disposing);

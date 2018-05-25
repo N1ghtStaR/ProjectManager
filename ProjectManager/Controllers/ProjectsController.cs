@@ -27,15 +27,13 @@
             {
                 return RedirectToAction("LogIn", "Authentication");
             }
-            
-            int id = (int)Session["ID"];
 
             if(!String.IsNullOrEmpty(projectTitle))
             {
-                return View(uow.ProjectRepository.GetProjectsByTitle(projectTitle, id));
+                return View(uow.ProjectRepository.GetProjectsByTitle(projectTitle, (int)Session["ID"]));
             }
 
-            return View(uow.ProjectRepository.GetAllProjectsForUser(id));
+            return View(uow.ProjectRepository.GetAllProjectsForUser((int)Session["ID"]));
         }
         
         public ActionResult Status(string status)
@@ -45,9 +43,7 @@
                 return RedirectToAction("LogIn", "Authentication");
             }
 
-            int id = (int)Session["ID"];
-
-            return View("Index", uow.ProjectRepository.GetProjectsByStatus(status, id));
+            return View("Index", uow.ProjectRepository.GetProjectsByStatus(status, (int)Session["ID"]));
         }
 
 
@@ -89,9 +85,7 @@
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            int ID = (int)id;
-
-            Project project = uow.ProjectRepository.GetProjectByID(ID);
+            Project project = uow.ProjectRepository.GetProjectByID((int)id);
 
             if (project == null)
             {
@@ -117,9 +111,7 @@
 
             if (ModelState.IsValid)
             {
-                int id = (int)Session["ID"];
-
-                var tasks = uow.TaskRepository.GetAllTaskForProject(id);
+                var tasks = uow.TaskRepository.GetAllTaskForProject((int)project.ID);
 
                 if (tasks != null)
                 {
@@ -127,7 +119,7 @@
                     {
                         if (task.Status.ToString().Equals("InProgress"))
                         {
-                            return RedirectToAction("List", "Tasks");
+                            return RedirectToAction("Status", "Tasks", routeValues: new { ProjectID = project.ID, Status = "InProgress" });
                         }
                     }
                 }
@@ -156,9 +148,7 @@
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            int ID = (int)id;
-
-            Project project = uow.ProjectRepository.GetProjectByID(ID);
+            Project project = uow.ProjectRepository.GetProjectByID((int)id);
 
             if (project == null)
             {
@@ -198,9 +188,7 @@
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            int ID = (int)id;
-
-            Project project = uow.ProjectRepository.GetProjectByID(ID);
+            Project project = uow.ProjectRepository.GetProjectByID((int)id);
 
             if (project == null)
             {
