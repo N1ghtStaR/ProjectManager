@@ -24,11 +24,6 @@
         [Authenticated]
         public ActionResult Registration()
         {
-            if(Session["ID"] == null)
-            {
-                return View();
-            }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -97,15 +92,15 @@
         [ValidateAntiForgeryToken]
         public ActionResult Update([Bind(Include = "ID,Username,Password,Email,Role")] Developer developer)
         {
-            if(Session["ID"] == null)
+            if(ModelState.IsValid)
             {
+                uow.DeveloperRepository.PromoteOrDemote(developer);
+                uow.DeveloperRepository.Save();
+                
                 return RedirectToAction("Index", "Home");
             }
 
-            uow.DeveloperRepository.PromoteOrDemote(developer);
-            uow.DeveloperRepository.Save();
-
-            return RedirectToAction("Index", "Home");
+            return View(developer);
         }
 
         [IsAuthenticated]
@@ -128,18 +123,12 @@
         [IsAuthenticated]
         public ActionResult AccountDetails(int? id)
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            else if (id == null)
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            int ID = (int)id;
-
-            Developer developer = uow.DeveloperRepository.GetDeveloperByID(ID);
+            Developer developer = uow.DeveloperRepository.GetDeveloperByID((int)id);
 
             if (developer == null)
             {

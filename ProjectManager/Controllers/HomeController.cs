@@ -21,12 +21,17 @@
 
         public ActionResult Index(string developerUsername)
         {
-            if (!String.IsNullOrEmpty(developerUsername))
-            { 
-                return View(uow.DeveloperRepository.GetDevelopersByUsername(developerUsername));
+            if(Session["ID"] != null)
+            {
+                if (!String.IsNullOrEmpty(developerUsername))
+                {
+                    return View(uow.DeveloperRepository.GetDevelopersByUsername(developerUsername));
+                }
+
+                return View(uow.DeveloperRepository.GetAllDevelopers());
             }
 
-            return View(uow.DeveloperRepository.GetAllDevelopers());
+            return View();
         }
     }
 }

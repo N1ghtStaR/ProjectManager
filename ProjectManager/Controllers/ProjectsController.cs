@@ -38,7 +38,6 @@
             return View("Index", uow.ProjectRepository.GetProjectsByStatus(status, (int)Session["ID"]));
         }
 
-
         public ActionResult Create()
         {
             ViewBag.Owner = Session["ID"];
