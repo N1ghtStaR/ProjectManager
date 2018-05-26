@@ -3,10 +3,12 @@
     using System;
     using System.Net;
     using System.Web.Mvc;
+    using ProjectManager.Filters;
     using ProjectManagerDataAccess;
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
 
+    [IsAuthenticated]
     public class ProjectsController : Controller
     {
         private readonly UnitOfWork uow;
@@ -23,11 +25,6 @@
 
         public ActionResult Index(string projectTitle)
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-
             if(!String.IsNullOrEmpty(projectTitle))
             {
                 return View(uow.ProjectRepository.GetProjectsByTitle(projectTitle, (int)Session["ID"]));
@@ -38,22 +35,12 @@
         
         public ActionResult Status(string status)
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-
             return View("Index", uow.ProjectRepository.GetProjectsByStatus(status, (int)Session["ID"]));
         }
 
 
         public ActionResult Create()
         {
-            if (Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-
             ViewBag.Owner = Session["ID"];
 
             return View();
@@ -76,11 +63,7 @@
        
         public ActionResult Confirm(int? id)
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-            else if (id == null)
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -104,11 +87,6 @@
         [ValidateAntiForgeryToken]
         public ActionResult Update([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] Project project)
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("Login", "Authentication");
-            }
-
             if (ModelState.IsValid)
             {
                 var tasks = uow.TaskRepository.GetAllTaskForProject((int)project.ID);
@@ -139,11 +117,7 @@
 
         public ActionResult Edit(int? id)
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-            else if (id == null)
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -179,11 +153,7 @@
 
         public ActionResult Delete(int? id)
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-            else if (id == null)
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }

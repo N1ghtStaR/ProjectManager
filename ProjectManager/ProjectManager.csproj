@@ -153,6 +153,8 @@
     <Compile Include="Controllers\IncomesController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
+    <Compile Include="Filters\IsAuthenticated.cs" />
+    <Compile Include="Filters\NotAuthenticated.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

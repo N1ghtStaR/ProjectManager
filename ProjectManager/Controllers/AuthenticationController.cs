@@ -2,6 +2,7 @@
 {
     using System.Net;
     using System.Web.Mvc;
+    using ProjectManager.Filters;
     using ProjectManagerDataAccess;
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
@@ -14,11 +15,13 @@
         {
             this.uow = new UnitOfWork(new ProjectManagerDbContext());
         }
+
         public AuthenticationController(ProjectManagerDbContext context)
         {
             uow = new UnitOfWork(context);
         }
 
+        [Authenticated]
         public ActionResult Registration()
         {
             if(Session["ID"] == null)
@@ -29,52 +32,40 @@
             return RedirectToAction("Index", "Home");
         }
 
+        [Authenticated]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Registration([Bind(Include = "ID,Username,Email,Password,Role")] Developer developer)
         {
-            if(Session["ID"] == null)
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    uow.DeveloperRepository.Registration(developer);
-                    uow.DeveloperRepository.Save();
+                uow.DeveloperRepository.Registration(developer);
+                uow.DeveloperRepository.Save();
 
-                    Session["ID"] = developer.ID;
-                    Session["Username"] = developer.Username;
-                    Session["Role"] = developer.Role;
+                Session["ID"] = developer.ID;
+                Session["Username"] = developer.Username;
+                Session["Role"] = developer.Role;
+            
+                Session["ProjectID"] = null;
+                Session["ProjectTitle"] = null;
+                Session["ProjectStatus"] = null;
 
-                    Session["ProjectID"] = null;
-                    Session["ProjectTitle"] = null;
-                    Session["ProjectStatus"] = null;
-
-                    return RedirectToAction("Index", "Home");
-                }
-
-                return View(developer);
-            }
-
-            return RedirectToAction("Index", "Home");
-        }
-
-        public ActionResult LogIn()
-        {
-            if(Session["ID"] == null)
-            {
-                return View();
-            }
-
-            return RedirectToAction("Index", "Home");
-        }
-
-        [HttpPost]
-        public ActionResult LogIn(string username, string password)
-        {
-            if(Session["ID"] != null)
-            {
                 return RedirectToAction("Index", "Home");
             }
 
+            return View(developer);
+        }
+
+        [Authenticated]
+        public ActionResult LogIn()
+        {
+            return View();
+        }
+
+        [Authenticated]
+        [HttpPost]
+        public ActionResult LogIn(string username, string password)
+        {
             if(ModelState.IsValid)
             {
                 try
@@ -89,7 +80,8 @@
                     Session["ProjectTitle"] = null;
                     Session["ProjectStatus"] = null;
 
-                    return RedirectToAction("Index", "Home");
+                    string msg = "Hello";
+                    return RedirectToAction("Index", "Home", msg);
                 }
                 catch
                 {
@@ -100,6 +92,7 @@
             return View();
         }
 
+        [IsAuthenticated]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Update([Bind(Include = "ID,Username,Password,Email,Role")] Developer developer)
@@ -115,6 +108,7 @@
             return RedirectToAction("Index", "Home");
         }
 
+        [IsAuthenticated]
         public ActionResult LogOut()
         {
             if(Session["ID"] != null)
@@ -131,6 +125,7 @@
             return RedirectToAction("Index", "Home");
         }
 
+        [IsAuthenticated]
         public ActionResult AccountDetails(int? id)
         {
             if(Session["ID"] == null)

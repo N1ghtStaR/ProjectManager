@@ -1,13 +1,12 @@
 ﻿namespace ProjectManager.Controllers
 {
     using System.Web.Mvc;
+    using ProjectManager.Filters;
     using ProjectManagerDataAccess;
-    using ProjectManagerDataAccess.Repositories.DeveloperRepository;
-    using ProjectManagerDataAccess.Repositories.IncomeRepository;
-    using ProjectManagerDataAccess.Repositories.ProjectRepository;
     using ProjectManagerDB;
-
     using ProjectManagerDB.Entities;
+
+    [IsAuthenticated]
     public class IncomesController : Controller
     {
         private readonly UnitOfWork uow;
@@ -24,11 +23,7 @@
 
         public ActionResult FindIncomes(int? id)
         {
-            if (Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-            else if (id == null)
+            if (id == null)
             {
                 return HttpNotFound();
             }
@@ -40,21 +35,11 @@
 
         public ActionResult Index()
         {
-            if (Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-
             return View(uow.IncomeRepository.GetIncomesForUser((int)Session["ID"]));
         }
 
         public ActionResult Create()
         {
-            if (Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-
             Project project = uow.ProjectRepository.GetProjectByID((int)Session["ProjectID"]);
 
             ViewBag.ProjectName = project.Title;
@@ -78,16 +63,13 @@
 
             ViewBag.OwnerDeveloper = Session["ID"];
             ViewBag.OwnerProject = Session["ProjectID"];
+
             return View(income);
         }
 
         public ActionResult Details(int? id)
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-            else if(id == null)
+            if(id == null)
             {
                 return RedirectToAction("List", "Projects");
             }

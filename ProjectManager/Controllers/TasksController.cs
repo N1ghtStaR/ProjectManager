@@ -2,10 +2,12 @@
 {
     using System.Net;
     using System.Web.Mvc;
+    using ProjectManager.Filters;
     using ProjectManagerDataAccess;
     using ProjectManagerDB;
-
     using ProjectManagerDB.Entities;
+
+    [IsAuthenticated]
     public class TasksController : Controller
     {
         private readonly UnitOfWork uow;
@@ -24,7 +26,7 @@
         {
             if (id == null)
             {
-                return HttpNotFound();
+                return RedirectToAction("Index", "Projects");
             }
 
             Project project = uow.ProjectRepository.GetProjectByID((int)id);
@@ -38,31 +40,17 @@
 
         public ActionResult Index()
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-
             return View(uow.TaskRepository.GetAllTaskForProject((int)Session["ProjectID"]));
         }
 
         public ActionResult Status (string status)
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-
             return View("Index", uow.TaskRepository.GetTasksByStatus((int)Session["ProjectID"], status));
         }
 
         public ActionResult Create()
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-            else if(Session["ProjectStatus"].ToString().Equals("Ready"))
+            if(Session["ProjectStatus"].ToString().Equals("Ready"))
             {
                 return RedirectToAction("Index", "Task");
             }
@@ -76,11 +64,6 @@
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,ProjectID,Description,Priority,Status")] Task task)
         {
-            if (Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-
             if (ModelState.IsValid)
             {
                 uow.TaskRepository.Create(task);
@@ -115,11 +98,6 @@
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,ProjectID,Description,Priority,Status")] Task task)
         {
-            if (Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-
             if (ModelState.IsValid)
             {
                 uow.TaskRepository.Update(task);
@@ -135,11 +113,7 @@
 
         public ActionResult Confirm(int? id)
         {
-            if(Session["ID"] == null)
-            {
-                return RedirectToAction("LogIn", "Authentication");
-            }
-            else if (id == null)
+            if (id == null)
             {
                 return RedirectToAction("Index", "Tasks");
             }
@@ -161,11 +135,6 @@
         [ValidateAntiForgeryToken]
         public ActionResult Update([Bind(Include = "ID,ProjectID,Description,Priority,Status")] Task task)
         {
-            if (Session["ID"] == null)
-            {
-                return RedirectToAction("Login", "Authentication");
-            }
-
             if (ModelState.IsValid)
             {
                 uow.TaskRepository.Update(task);
