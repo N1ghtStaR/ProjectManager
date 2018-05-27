@@ -1,14 +1,12 @@
-﻿using ProjectManagerDB;
-using ProjectManagerDB.Entities;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProjectManagerDataAccess.Repositories.ProjectRepository
+﻿namespace ProjectManagerDataAccess.Repositories.ProjectRepository
 {
+    using ProjectManagerDB;
+    using ProjectManagerDB.Entities;
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Linq;
+
     public class ProjectRepository : IProjectRepository, IDisposable
     {
         private readonly ProjectManagerDbContext Context;

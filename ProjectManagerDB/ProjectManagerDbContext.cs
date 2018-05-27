@@ -14,7 +14,6 @@ namespace ProjectManagerDB
         {
         }
 
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
         }

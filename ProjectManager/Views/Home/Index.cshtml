@@ -43,17 +43,20 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Username)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Role)
-                                    </td>
-                                    <td>
-                                        <a href="@Url.Action("AccountDetails", "Authentication", new { id = item.ID })" class="btn btn-primary glyphicon glyphicon-user"></a>
-                                    </td>
-                                </tr>
+                                if (!item.ID.Equals(Session["ID"]))
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Username)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Role)
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("AccountDetails", "Authentication", new { id = item.ID })" class="btn btn-primary glyphicon glyphicon-user"></a>
+                                        </td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                     </table>

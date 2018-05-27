@@ -2,9 +2,7 @@
 {
     using ProjectManagerDB.Entities;
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-
 
     public interface IProjectRepository : IDisposable
     {
@@ -17,6 +15,7 @@
         void Create(Project project);
         void Update(Project project);
         void Delete(Project project);
+
         void Save();
     }
 }

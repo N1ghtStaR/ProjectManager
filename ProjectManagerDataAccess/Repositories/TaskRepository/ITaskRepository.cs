@@ -2,8 +2,8 @@
 {
     using ProjectManagerDB.Entities;
     using System;
-
     using System.Collections.Generic;
+
     public interface ITaskRepository : IDisposable
     {
         IEnumerable<Task> GetAllTaskForProject(int id);
@@ -14,6 +14,7 @@
         void Create(Task task);
         void Update(Task task);
         void Delete(Task task);
+
         void Save();
     }
 }

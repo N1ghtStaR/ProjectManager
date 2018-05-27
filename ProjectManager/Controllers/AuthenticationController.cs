@@ -24,7 +24,7 @@
         [Authenticated]
         public ActionResult Registration()
         {
-            return RedirectToAction("Index", "Home");
+            return View();
         }
 
         [Authenticated]
