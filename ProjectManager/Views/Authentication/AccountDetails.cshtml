@@ -4,10 +4,12 @@
     ViewBag.Title = "Details";
 }
 
-<h2>User Details</h2>
+<center>
+    <h2>User Account</h2>
+    <h6>Information and statistics</h6>
+</center>
+
 <div>
-    <h4>@Model.Role</h4>
-    <hr />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Username)
@@ -27,6 +29,82 @@
         <dd>
             @Html.DisplayFor(model => model.Role)
         </dd>
+        <hr />
+        <center>
+            <h2>Projects Details</h2>
+        </center>
+        <hr style="width: 50%"/>
+        <br />
+        <dt>
+            <p>Projects</p>
+        </dt>
+        <dd>
+            <p>
+                @ViewBag.Projects
+                @if(Model.ID.Equals(Session["ID"]) && ViewBag.Projects != 0)
+                {
+                    <a href="@Url.Action("Index", "Projects")" class="btn btn-sm btn-default">Details</a>
+                }
+            </p>
+        </dd>
+        @if (ViewBag.Projects != 0)
+        {
+            <dt>
+                In Progress
+            </dt>
+            <dd>
+                <p>
+                    @ViewBag.ProjectsInProgress
+                    @if(Model.ID.Equals(Session["ID"]) && ViewBag.ProjectsInProgress != 0)
+                    {
+                        <a href="@Url.Action("Status", "Projects", new { status = "InProgress" })" class="btn btn-sm btn-default">Details</a>
+                    }
+                </p>
+            </dd>
+            <dt>
+                Ready
+            </dt>
+            <dd>
+                <p>
+                    @ViewBag.ProjectsReady
+                    @if(Model.ID.Equals(Session["ID"]) && ViewBag.ProjectsReady != 0)
+                    {
+                        <a href="@Url.Action("Status", "Projects", new { status = "Ready" })" class="btn btn-sm btn-default">Details</a>
+                    }
+                </p>
+            </dd>
+        }
+
+        @if (Model.ID.Equals(Session["ID"]))
+        {
+            <hr />
+            <center>
+                <h2>Income Details</h2>
+            </center>
+            <hr style="width:50%"/>
+            <br />
+            <dt>
+                <p>Total Incomes</p>
+            </dt>
+            <dd>
+                <p>@ViewBag.TotalIncomes$</p>
+            </dd>
+            if (ViewBag.TotalIncome != 0)
+            {
+                <dt>
+                    <p>Impost</p>
+                </dt>
+                <dd>
+                    <p>-@ViewBag.DDS$</p>
+                </dd>
+                <dt>
+                    <p>Incomes In Bank</p>
+                </dt>
+                <dd>
+                    <p>@ViewBag.Cash$</p>
+                </dd>
+            }
+        }
     </dl>
 
         @if (Session["Role"].ToString().Equals("TeamLeader") && Model.ID != (int)Session["ID"])
@@ -67,6 +145,7 @@
                         </div>
                      </div>
                 </div>
+                <hr />
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
                         <input type="submit" value="@ViewBag.SubmitValue" class="btn btn-primary" />

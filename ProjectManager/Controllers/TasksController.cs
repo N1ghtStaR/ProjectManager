@@ -102,7 +102,7 @@
             {
                 uow.TaskRepository.Update(task);
                 uow.TaskRepository.Save();
-
+                
                 return RedirectToAction("Index", "Tasks");
             }
 

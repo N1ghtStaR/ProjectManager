@@ -134,6 +134,68 @@
             {
                 return HttpNotFound();
             }
+            else if(id == (int)Session["ID"])
+            {
+                var incomes = uow.IncomeRepository.GetIncomesForUser((int)id);
+
+                double income = 0;
+
+                if(incomes != null)
+                {
+                    foreach(var inc in incomes)
+                    {
+                        income += inc.Amount;
+                    }
+
+                    double dds = (income * 20) / 100;
+                    double cash = income - dds;
+
+                    ViewBag.DDS = dds;
+                    ViewBag.Cash = cash;
+                }
+
+                ViewBag.TotalIncomes = income;
+            }
+
+            var projects = uow.ProjectRepository.GetAllProjectsForUser((int)id);
+            int projectsCount = 0;
+
+            if (projects != null)
+            {
+                foreach (var project in projects)
+                {
+                    projectsCount++;
+                }
+
+                var projectsInProgress = uow.ProjectRepository.GetProjectsByStatus("InProgress", (int)id);
+                var projectsReady = uow.ProjectRepository.GetProjectsByStatus("Ready", (int)id);
+
+                int inProgress = 0;
+                int ready = 0;
+
+                if (projectsInProgress != null)
+                {
+                    foreach (var progressP in projectsInProgress)
+                    {
+                        inProgress++;
+                    }
+
+                    ViewBag.ProjectsInProgress = inProgress;
+                }
+
+                if (projectsReady != null)
+                {
+                    foreach (var readyP in projectsReady)
+                    {
+                        ready++;
+                    }
+
+                    ViewBag.ProjectsReady = ready;
+                }
+
+                ViewBag.Projects = projectsCount;
+                ViewBag.ProjectsCount = projectsCount;
+            }
 
             if (developer.Role.ToString().Equals("Developer"))
             {
