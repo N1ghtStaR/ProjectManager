@@ -1,7 +1,9 @@
 ﻿namespace ProjectManager.Controllers
 {
+    using System.Collections.Generic;
     using System.Web.Mvc;
     using ProjectManager.Filters;
+    using ProjectManager.Models;
     using ProjectManagerDataAccess;
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
@@ -21,21 +23,24 @@
             uow = new UnitOfWork(context);
         }
 
-        public ActionResult FindIncomes(int? id)
-        {
-            if (id == null)
-            {
-                return HttpNotFound();
-            }
-
-            Session["ProjectID"] = id;
-
-            return RedirectToAction("Index");
-        }
-
         public ActionResult Index()
         {
-            return View(uow.IncomeRepository.GetIncomesForUser((int)Session["ID"]));
+            IEnumerable<Income> incomes = uow.IncomeRepository.GetIncomesForUser((int)Session["ID"]);
+
+            if(incomes != null)
+            {
+                List<IncomeViewModel> model = new List<IncomeViewModel>();
+
+                foreach(Income income in incomes)
+                {
+                    IncomeViewModel incomeModel = new IncomeViewModel(income);
+                    model.Add(incomeModel);
+                }
+
+                return View(model);
+            }
+
+            return View();
         }
 
         public ActionResult Create()
@@ -51,10 +56,19 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ProjectID,DeveleperID,Title,Amount,ReleaseDate")] Income income)
+        public ActionResult Create([Bind(Include = "ProjectID,DeveleperID,Title,Amount,ReleaseDate")] IncomeViewModel incomeModel)
         {
             if (ModelState.IsValid)
             {
+                Income income = new Income
+                {
+                    ProjectID = incomeModel.ProjectID,
+                    DeveleperID = incomeModel.DeveleperID,
+                    Title = incomeModel.Title,
+                    Amount = incomeModel.Amount,
+                    ReleaseDate = incomeModel.ReleaseDate
+                };
+
                 uow.IncomeRepository.Create(income);
                 uow.IncomeRepository.Save();
 
@@ -64,7 +78,7 @@
             ViewBag.OwnerDeveloper = Session["ID"];
             ViewBag.OwnerProject = Session["ProjectID"];
 
-            return View(income);
+            return View(incomeModel);
         }
 
         public ActionResult Details(int? id)
@@ -75,13 +89,15 @@
             }
 
             Income income = uow.IncomeRepository.GetIncomeByID((int)id);
-
+           
             if (income == null)
             {
                 return HttpNotFound();
             }
 
-            return View(income);
+            IncomeViewModel model = new IncomeViewModel(income);
+
+            return View(model);
         }
 
         protected override void Dispose(bool disposing)

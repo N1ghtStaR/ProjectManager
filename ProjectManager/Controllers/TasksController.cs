@@ -1,8 +1,11 @@
 ﻿namespace ProjectManager.Controllers
 {
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Net;
     using System.Web.Mvc;
     using ProjectManager.Filters;
+    using ProjectManager.Models;
     using ProjectManagerDataAccess;
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
@@ -35,17 +38,36 @@
             Session["ProjectTitle"] = title;
             Session["ProjectStatus"] = project.Status;
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Tasks");
         }
+
 
         public ActionResult Index()
         {
-            return View(uow.TaskRepository.GetAllTaskForProject((int)Session["ProjectID"]));
-        }
+            IEnumerable<Task> tasks = uow.TaskRepository.GetAllTaskForProject((int)Session["ProjectID"]);
+            List<TaskViewModel> model = new List<TaskViewModel>();
 
+            foreach(Task task in tasks)
+            {
+                TaskViewModel taskModel = new TaskViewModel(task);
+                model.Add(taskModel);
+            }
+
+            return View(model);
+        }
+        
         public ActionResult Status (string status)
         {
-            return View("Index", uow.TaskRepository.GetTasksByStatus((int)Session["ProjectID"], status));
+            IEnumerable<Task> tasks = uow.TaskRepository.GetTasksByStatus((int)Session["ProjectID"], status);
+            List<TaskViewModel> model = new List<TaskViewModel>();
+
+            foreach(Task task in tasks)
+            {
+                TaskViewModel taskModel = new TaskViewModel(task);
+                model.Add(taskModel);
+            }
+
+            return View("Index", model);
         }
 
         public ActionResult Create()
@@ -62,10 +84,19 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,ProjectID,Description,Priority,Status")] Task task)
+        public ActionResult Create([Bind(Include = "ID,ProjectID,Description,Priority,Status")] TaskViewModel taskModel)
         {
             if (ModelState.IsValid)
             {
+                Task task = new Task
+                {
+                    ID = taskModel.ID,
+                    ProjectID = taskModel.ProjectID,
+                    Description = taskModel.Description,
+                    Priority = (Task.Anteriority)taskModel.Priority,
+                    Status = (Task.Stats)taskModel.Status
+                };
+
                 uow.TaskRepository.Create(task);
                 uow.TaskRepository.Save();
             }
@@ -89,17 +120,28 @@
                 return HttpNotFound();
             }
 
+            TaskViewModel model = new TaskViewModel(task);
+
             ViewBag.Owner = Session["ProjectID"];
 
-            return View(task);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,ProjectID,Description,Priority,Status")] Task task)
+        public ActionResult Edit([Bind(Include = "ID,ProjectID,Description,Priority,Status")] TaskViewModel taskModel)
         {
             if (ModelState.IsValid)
             {
+                Task task = new Task
+                {
+                    ID = taskModel.ID,
+                    ProjectID = taskModel.ProjectID,
+                    Description = taskModel.Description,
+                    Priority = (Task.Anteriority)taskModel.Priority,
+                    Status = (Task.Stats)taskModel.Status
+                };
+
                 uow.TaskRepository.Update(task);
                 uow.TaskRepository.Save();
                 
@@ -108,7 +150,7 @@
 
             ViewBag.Owner = Session["ProjectID"];
             
-            return View(task);
+            return View(taskModel);
         }
 
         public ActionResult Confirm(int? id)
@@ -125,25 +167,36 @@
                 return HttpNotFound();
             }
 
+            TaskViewModel model = new TaskViewModel(task);
+
             ViewBag.Owner = Session["ProjectID"];
             ViewBag.Status = "Ready";
 
-            return View(task);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update([Bind(Include = "ID,ProjectID,Description,Priority,Status")] Task task)
+        public ActionResult Update([Bind(Include = "ID,ProjectID,Description,Priority,Status")] TaskViewModel taskModel)
         {
             if (ModelState.IsValid)
             {
+                Task task = new Task
+                {
+                    ID = taskModel.ID,
+                    ProjectID = taskModel.ProjectID,
+                    Description = taskModel.Description,
+                    Priority = (Task.Anteriority)taskModel.Priority,
+                    Status = (Task.Stats)taskModel.Status
+                };
+
                 uow.TaskRepository.Update(task);
                 uow.TaskRepository.Save();
 
                 return RedirectToAction("Index", "Tasks");
             }
 
-            return View(task);
+            return View(taskModel);
         }
 
         protected override void Dispose(bool disposing)

@@ -1,8 +1,10 @@
 ﻿namespace ProjectManager.Controllers
 {
+    using System.Collections.Generic;
     using System.Net;
     using System.Web.Mvc;
     using ProjectManager.Filters;
+    using ProjectManager.Models;
     using ProjectManagerDataAccess;
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
@@ -30,16 +32,25 @@
         [Authenticated]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Registration([Bind(Include = "ID,Username,Email,Password,Role")] Developer developer)
+        public ActionResult Registration([Bind(Include = "ID,Username,Email,Password,Role")] DeveloperViewModel developerModel)
         {
             if (ModelState.IsValid)
             {
+                Developer developer = new Developer
+                {
+                    ID = developerModel.ID,
+                    Username = developerModel.Username,
+                    Email = developerModel.Email,
+                    Password = developerModel.Password,
+                    Role = (Developer.Character)developerModel.Role
+                };
+
                 uow.DeveloperRepository.Registration(developer);
                 uow.DeveloperRepository.Save();
 
-                Session["ID"] = developer.ID;
-                Session["Username"] = developer.Username;
-                Session["Role"] = developer.Role;
+                Session["ID"] = developerModel.ID;
+                Session["Username"] = developerModel.Username;
+                Session["Role"] = developerModel.Role;
             
                 Session["ProjectID"] = null;
                 Session["ProjectTitle"] = null;
@@ -48,7 +59,7 @@
                 return RedirectToAction("Index", "Home");
             }
 
-            return View(developer);
+            return View(developerModel);
         }
 
         [Authenticated]
@@ -90,17 +101,26 @@
         [IsAuthenticated]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update([Bind(Include = "ID,Username,Password,Email,Role")] Developer developer)
+        public ActionResult Update(DeveloperViewModel developerModel)
         {
             if(ModelState.IsValid)
             {
+                Developer developer = new Developer()
+                {
+                    ID = developerModel.ID,
+                    Username = developerModel.Username,
+                    Email = developerModel.Email,
+                    Password = developerModel.Password,
+                    Role = (Developer.Character)developerModel.Role
+                };
+
                 uow.DeveloperRepository.PromoteOrDemote(developer);
                 uow.DeveloperRepository.Save();
                 
                 return RedirectToAction("Index", "Home");
             }
 
-            return View(developer);
+            return View(developerModel);
         }
 
         [IsAuthenticated]
@@ -134,48 +154,77 @@
             {
                 return HttpNotFound();
             }
-            else if(id == (int)Session["ID"])
-            {
-                var incomes = uow.IncomeRepository.GetIncomesForUser((int)id);
 
-                double income = 0;
+            DeveloperViewModel developerModel = new DeveloperViewModel(developer);
+
+            if (id == (int)Session["ID"])
+            {
+                IEnumerable<Income> incomes = uow.IncomeRepository.GetIncomesForUser((int)id);
+                double incomeAmount = 0;
 
                 if(incomes != null)
                 {
-                    foreach(var inc in incomes)
+                    List<IncomeViewModel> incomesModel = new List<IncomeViewModel>();
+                    foreach (Income i in incomes)
                     {
-                        income += inc.Amount;
+                        IncomeViewModel incomeModel = new IncomeViewModel(i);
+                        incomesModel.Add(incomeModel);
                     }
 
-                    double dds = (income * 20) / 100;
-                    double cash = income - dds;
+                    foreach(IncomeViewModel income in incomesModel)
+                    {
+                        incomeAmount += income.Amount;
+                    }
+
+                    double dds = (incomeAmount * 20) / 100;
+                    double cash = incomeAmount - dds;
 
                     ViewBag.DDS = dds;
                     ViewBag.Cash = cash;
                 }
 
-                ViewBag.TotalIncomes = income;
+                ViewBag.TotalIncomes = incomeAmount;
             }
 
-            var projects = uow.ProjectRepository.GetAllProjectsForUser((int)id);
+            IEnumerable<Project> projects = uow.ProjectRepository.GetAllProjectsForUser((int)id);
             int projectsCount = 0;
 
             if (projects != null)
             {
-                foreach (var project in projects)
+                List<ProjectViewModel> projectsModel = new List<ProjectViewModel>();
+                foreach(Project project in projects)
+                {
+                    ProjectViewModel projectModel = new ProjectViewModel(project);
+                    projectsModel.Add(projectModel);
+                }
+
+                foreach (ProjectViewModel project in projectsModel)
                 {
                     projectsCount++;
                 }
 
-                var projectsInProgress = uow.ProjectRepository.GetProjectsByStatus("InProgress", (int)id);
-                var projectsReady = uow.ProjectRepository.GetProjectsByStatus("Ready", (int)id);
+                List<ProjectViewModel> projectsInProgressModel = new List<ProjectViewModel>();
+                List<ProjectViewModel> projectsReadyModel = new List<ProjectViewModel>();
+                foreach(Project project in projects)
+                {
+                    if(project.Status.ToString().Equals("Ready"))
+                    {
+                        ProjectViewModel projectInProgress = new ProjectViewModel(project);
+                        projectsInProgressModel.Add(projectInProgress);
+                    }
+                    else
+                    {
+                        ProjectViewModel projectReady = new ProjectViewModel(project);
+                        projectsReadyModel.Add(projectReady);
+                    }
+                }
 
                 int inProgress = 0;
                 int ready = 0;
 
-                if (projectsInProgress != null)
+                if (projectsReadyModel != null)
                 {
-                    foreach (var progressP in projectsInProgress)
+                    foreach (ProjectViewModel inProgressProject in projectsReadyModel)
                     {
                         inProgress++;
                     }
@@ -183,9 +232,9 @@
                     ViewBag.ProjectsInProgress = inProgress;
                 }
 
-                if (projectsReady != null)
+                if (projectsReadyModel != null)
                 {
-                    foreach (var readyP in projectsReady)
+                    foreach (ProjectViewModel readyProject in projectsReadyModel)
                     {
                         ready++;
                     }
@@ -197,7 +246,7 @@
                 ViewBag.ProjectsCount = projectsCount;
             }
 
-            if (developer.Role.ToString().Equals("Developer"))
+            if (developerModel.Role.ToString().Equals("Developer"))
             {
                 ViewBag.SubmitValue = "Promote";
                 ViewBag.RoleValue = "TeamLeader";
@@ -208,7 +257,7 @@
                 ViewBag.RoleValue = "Developer";
             }
 
-            return View(developer);
+            return View(developerModel);
         }
 
         protected override void Dispose(bool disposing)

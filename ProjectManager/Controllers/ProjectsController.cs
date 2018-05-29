@@ -1,9 +1,12 @@
 ﻿namespace ProjectManager.Controllers
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Net;
     using System.Web.Mvc;
     using ProjectManager.Filters;
+    using ProjectManager.Models;
     using ProjectManagerDataAccess;
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
@@ -25,17 +28,45 @@
 
         public ActionResult Index(string projectTitle)
         {
-            if(!String.IsNullOrEmpty(projectTitle))
+            IEnumerable<Project> projects = uow.ProjectRepository.GetAllProjectsForUser((int)Session["ID"]);
+            List<ProjectViewModel> model = new List<ProjectViewModel>();
+
+            foreach (Project project in projects)
             {
-                return View(uow.ProjectRepository.GetProjectsByTitle(projectTitle, (int)Session["ID"]));
+                ProjectViewModel projectModel = new ProjectViewModel(project);
+                model.Add(projectModel);
             }
 
-            return View(uow.ProjectRepository.GetAllProjectsForUser((int)Session["ID"]));
+            if (!String.IsNullOrEmpty(projectTitle))
+            {
+                List<ProjectViewModel> modelSearch = new List<ProjectViewModel>();
+                foreach(Project project in projects)
+                {
+                    if(project.Title.ToLower().Contains(projectTitle))
+                    {
+                        ProjectViewModel projectSearchModel = new ProjectViewModel(project);
+                        modelSearch.Add(projectSearchModel);
+                    }
+                }
+
+                return View(modelSearch);
+            }
+
+            return View(model);
         }
         
         public ActionResult Status(string status)
         {
-            return View("Index", uow.ProjectRepository.GetProjectsByStatus(status, (int)Session["ID"]));
+            IEnumerable<Project> projects = uow.ProjectRepository.GetProjectsByStatus(status, (int)Session["ID"]);
+            List<ProjectViewModel> model = new List<ProjectViewModel>();
+
+            foreach(Project project in projects)
+            {
+                ProjectViewModel projectModel = new ProjectViewModel(project);
+                model.Add(projectModel);
+            }
+
+            return View("Index", model);
         }
 
         public ActionResult Create()
@@ -47,17 +78,27 @@
        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] Project project)
+        public ActionResult Create([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] ProjectViewModel projectModel)
         {
             if (ModelState.IsValid)
             {
+                Project project = new Project
+                {
+                    ID = projectModel.ID,
+                    DeveleperID = projectModel.DeveleperID,
+                    Title = projectModel.Title,
+                    Description = projectModel.Description,
+                    Category = (Project.Division)projectModel.Category,
+                    Status = (Project.Statistic)projectModel.Status
+                };
+
                 uow.ProjectRepository.Create(project);
                 uow.ProjectRepository.Save();
 
                 return RedirectToAction("Index", "Projects");
             }
 
-            return View(project);
+            return View(projectModel);
         }
        
         public ActionResult Confirm(int? id)
@@ -68,6 +109,7 @@
             }
 
             Project project = uow.ProjectRepository.GetProjectByID((int)id);
+            ProjectViewModel model = new ProjectViewModel(project);
 
             if (project == null)
             {
@@ -79,27 +121,37 @@
 
             Session["ProjectID"] = id;
 
-            return View("Confirm", project);
+            return View("Confirm", model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] Project project)
+        public ActionResult Update([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] ProjectViewModel projectModel)
         {
             if (ModelState.IsValid)
             {
-                var tasks = uow.TaskRepository.GetAllTaskForProject((int)project.ID);
+                IEnumerable<Task> tasks = uow.TaskRepository.GetAllTaskForProject((int)projectModel.ID);
 
                 if (tasks != null)
                 {
-                    foreach (var task in tasks)
+                    foreach (Task task in tasks)
                     {
                         if (task.Status.ToString().Equals("InProgress"))
                         {
-                            return RedirectToAction("Status", "Tasks", routeValues: new { ProjectID = project.ID, Status = "InProgress" });
+                            return RedirectToAction("Status", "Tasks", routeValues: new { ProjectID = projectModel.ID, Status = "InProgress" });
                         }
                     }
                 }
+
+                Project project = new Project
+                {
+                    ID = projectModel.ID,
+                    DeveleperID = projectModel.DeveleperID,
+                    Title = projectModel.Title,
+                    Description = projectModel.Description,
+                    Category = (Project.Division)projectModel.Category,
+                    Status = (Project.Statistic)projectModel.Status
+                };
 
                 uow.ProjectRepository.Update(project);
                 uow.ProjectRepository.Save();
@@ -111,7 +163,7 @@
 
             ViewBag.Owner = Session["ID"];
 
-            return View(project);
+            return View(projectModel);
         }
 
         public ActionResult Edit(int? id)
@@ -122,6 +174,7 @@
             }
 
             Project project = uow.ProjectRepository.GetProjectByID((int)id);
+            ProjectViewModel model = new ProjectViewModel(project);
 
             if (project == null)
             {
@@ -135,10 +188,20 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] Project project)
+        public ActionResult Edit([Bind(Include = "ID,DeveleperID,Title,Description,Category,Status")] ProjectViewModel projectModel)
         {
             if (ModelState.IsValid)
             {
+                Project project = new Project
+                {
+                    ID = projectModel.ID,
+                    DeveleperID = projectModel.DeveleperID,
+                    Title = projectModel.Title,
+                    Description = projectModel.Description,
+                    Category = (Project.Division)projectModel.Category,
+                    Status = (Project.Statistic)projectModel.Status
+                };
+
                 uow.ProjectRepository.Update(project);
                 uow.ProjectRepository.Save();
 
@@ -147,7 +210,7 @@
 
             ViewBag.Owner = Session["ID"];
 
-            return View(project);
+            return View(projectModel);
         }
 
         public ActionResult Delete(int? id)
@@ -164,7 +227,9 @@
                 return HttpNotFound();
             }
 
-            return View(project);
+            ProjectViewModel model = new ProjectViewModel(project);
+
+            return View(model);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -172,7 +237,7 @@
         public ActionResult DeleteConfirmed(int id)
         {
             Project project = uow.ProjectRepository.GetProjectByID(id);
-            var tasks = uow.TaskRepository.GetAllTaskForProject(id);
+            IEnumerable<Task> tasks = uow.TaskRepository.GetAllTaskForProject(id);
 
             foreach(var task in tasks)
             {

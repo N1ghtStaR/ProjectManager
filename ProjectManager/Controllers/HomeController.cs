@@ -1,8 +1,11 @@
 ﻿namespace ProjectManager.Controllers
 {
+    using ProjectManager.Models;
     using ProjectManagerDataAccess;
     using ProjectManagerDB;
+    using ProjectManagerDB.Entities;
     using System;
+    using System.Collections.Generic;
     using System.Web.Mvc;
 
     public class HomeController : Controller
@@ -23,12 +26,30 @@
         {
             if(Session["ID"] != null)
             {
+                IEnumerable<Developer> developers = uow.DeveloperRepository.GetAllDevelopers();
+                List<DeveloperViewModel> model = new List<DeveloperViewModel>();
+
                 if (!String.IsNullOrEmpty(developerUsername))
                 {
-                    return View(uow.DeveloperRepository.GetDevelopersByUsername(developerUsername));
+                    foreach(Developer developer in developers)
+                    {
+                        if(developer.Username.ToLower().Contains(developerUsername))
+                        {
+                            DeveloperViewModel developerSearchModel = new DeveloperViewModel(developer);
+                            model.Add(developerSearchModel);
+                        }
+                    }
+
+                    return View(model);
                 }
 
-                return View(uow.DeveloperRepository.GetAllDevelopers());
+                foreach (Developer developer in developers)
+                {
+                    DeveloperViewModel developerModel = new DeveloperViewModel(developer);
+                    model.Add(developerModel);
+                }
+
+                return View(model);
             }
 
             return View();
