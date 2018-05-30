@@ -18,21 +18,17 @@
 
         public IEnumerable<Income> GetIncomesForUser(int id)
         {
-            return Context.Incomes
-                                .Where(i => i.DeveleperID.Equals(id))
-                                .ToList();
+            return Context.Incomes.Where(i => i.DeveleperID.Equals(id)).ToList();
         }
 
         public Income GetIncomeByID(int id)
         {
-            return Context.Incomes
-                            .Find(id);
+            return Context.Incomes.Find(id);
         }
 
         public void Create(Income income)
         {
-            Context.Incomes
-                        .Add(income);
+            Context.Incomes.Add(income);
         }
 
         public void Save()

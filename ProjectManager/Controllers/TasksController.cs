@@ -45,6 +45,7 @@
         public ActionResult Index()
         {
             IEnumerable<Task> tasks = uow.TaskRepository.GetAllTaskForProject((int)Session["ProjectID"]);
+
             List<TaskViewModel> model = new List<TaskViewModel>();
 
             foreach(Task task in tasks)
@@ -59,6 +60,7 @@
         public ActionResult Status (string status)
         {
             IEnumerable<Task> tasks = uow.TaskRepository.GetTasksByStatus((int)Session["ProjectID"], status);
+
             List<TaskViewModel> model = new List<TaskViewModel>();
 
             foreach(Task task in tasks)
@@ -99,11 +101,13 @@
 
                 uow.TaskRepository.Create(task);
                 uow.TaskRepository.Save();
+
+                return RedirectToAction("Index", "Tasks");
             }
 
             ViewBag.Owner = Session["ProjectID"];
 
-            return RedirectToAction("Index", "Tasks");
+            return View(taskModel);
         }
 
         public ActionResult Edit(int? id)

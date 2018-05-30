@@ -86,8 +86,7 @@
                     Session["ProjectTitle"] = null;
                     Session["ProjectStatus"] = null;
 
-                    string msg = "Hello";
-                    return RedirectToAction("Index", "Home", msg);
+                    return RedirectToAction("Index", "Home");
                 }
                 catch
                 {
@@ -160,11 +159,13 @@
             if (id == (int)Session["ID"])
             {
                 IEnumerable<Income> incomes = uow.IncomeRepository.GetIncomesForUser((int)id);
+
                 double incomeAmount = 0;
 
                 if(incomes != null)
                 {
                     List<IncomeViewModel> incomesModel = new List<IncomeViewModel>();
+
                     foreach (Income i in incomes)
                     {
                         IncomeViewModel incomeModel = new IncomeViewModel(i);
@@ -187,11 +188,13 @@
             }
 
             IEnumerable<Project> projects = uow.ProjectRepository.GetAllProjectsForUser((int)id);
+
             int projectsCount = 0;
 
             if (projects != null)
             {
                 List<ProjectViewModel> projectsModel = new List<ProjectViewModel>();
+
                 foreach(Project project in projects)
                 {
                     ProjectViewModel projectModel = new ProjectViewModel(project);
@@ -205,6 +208,7 @@
 
                 List<ProjectViewModel> projectsInProgressModel = new List<ProjectViewModel>();
                 List<ProjectViewModel> projectsReadyModel = new List<ProjectViewModel>();
+
                 foreach(Project project in projects)
                 {
                     if(project.Status.ToString().Equals("Ready"))

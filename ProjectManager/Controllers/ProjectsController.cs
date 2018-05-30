@@ -29,6 +29,7 @@
         public ActionResult Index(string projectTitle)
         {
             IEnumerable<Project> projects = uow.ProjectRepository.GetAllProjectsForUser((int)Session["ID"]);
+
             List<ProjectViewModel> model = new List<ProjectViewModel>();
 
             foreach (Project project in projects)
@@ -40,6 +41,7 @@
             if (!String.IsNullOrEmpty(projectTitle))
             {
                 List<ProjectViewModel> modelSearch = new List<ProjectViewModel>();
+
                 foreach(Project project in projects)
                 {
                     if(project.Title.ToLower().Contains(projectTitle))
@@ -58,6 +60,7 @@
         public ActionResult Status(string status)
         {
             IEnumerable<Project> projects = uow.ProjectRepository.GetProjectsByStatus(status, (int)Session["ID"]);
+
             List<ProjectViewModel> model = new List<ProjectViewModel>();
 
             foreach(Project project in projects)
@@ -109,12 +112,13 @@
             }
 
             Project project = uow.ProjectRepository.GetProjectByID((int)id);
-            ProjectViewModel model = new ProjectViewModel(project);
 
             if (project == null)
             {
                 return HttpNotFound();
             }
+
+            ProjectViewModel model = new ProjectViewModel(project);
 
             ViewBag.Status = "Ready";
             ViewBag.Owner = Session["ID"];
@@ -174,16 +178,17 @@
             }
 
             Project project = uow.ProjectRepository.GetProjectByID((int)id);
-            ProjectViewModel model = new ProjectViewModel(project);
 
             if (project == null)
             {
                 return HttpNotFound();
             }
 
+            ProjectViewModel model = new ProjectViewModel(project);
+
             ViewBag.Owner = Session["ID"];
 
-            return View(project);
+            return View(model);
         }
 
         [HttpPost]
@@ -237,9 +242,10 @@
         public ActionResult DeleteConfirmed(int id)
         {
             Project project = uow.ProjectRepository.GetProjectByID(id);
+
             IEnumerable<Task> tasks = uow.TaskRepository.GetAllTaskForProject(id);
 
-            foreach(var task in tasks)
+            foreach(Task task in tasks)
             {
                 uow.TaskRepository.Delete(task);
                 uow.TaskRepository.Save();

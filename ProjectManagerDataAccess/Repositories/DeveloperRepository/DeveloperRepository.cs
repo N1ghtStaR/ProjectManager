@@ -19,36 +19,28 @@ namespace ProjectManagerDataAccess.Repositories.DeveloperRepository
 
         public IEnumerable<Developer> GetAllDevelopers()
         {
-            return Context.Developers
-                                .ToList();
+            return Context.Developers.ToList();
         }
 
         public IEnumerable<Developer> GetDevelopersByUsername(string username)
         {
-            return Context.Developers
-                                .Where(d => d.Username.Contains(username))
-                                .ToList();
+            return Context.Developers.Where(d => d.Username.Contains(username)).ToList();
         }
 
         public Developer GetDeveloperByID(int id)
         {
-            return Context.Developers
-                                .Find(id);
+            return Context.Developers.Find(id);
         }
 
         public Developer LogIn(string username, string password)
         {
-            return Context.Developers
-                                .Where(d => d.Username.Equals(username) && d.Password.Equals(password))
-                                .Single();
+            return Context.Developers.Where(d => d.Username.Equals(username) && d.Password.Equals(password)).Single();
         }
 
         public void Registration(Developer developer)
         {
-            Context.Developers
-                        .Add(developer);
+            Context.Developers.Add(developer);
         }
-
 
         public void PromoteOrDemote(Developer developer)
         {

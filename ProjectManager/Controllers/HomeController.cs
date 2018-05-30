@@ -27,6 +27,7 @@
             if(Session["ID"] != null)
             {
                 IEnumerable<Developer> developers = uow.DeveloperRepository.GetAllDevelopers();
+
                 List<DeveloperViewModel> model = new List<DeveloperViewModel>();
 
                 if (!String.IsNullOrEmpty(developerUsername))

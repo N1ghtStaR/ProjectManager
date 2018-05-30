@@ -8,7 +8,7 @@
 
     public class UnitOfWork
     {
-        private ProjectManagerDbContext context;
+        private readonly ProjectManagerDbContext context;
 
         private DeveloperRepository developerRepository;
         private ProjectRepository projectRepository;

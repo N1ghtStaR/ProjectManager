@@ -53,26 +53,26 @@
                 @if (Session["ProjectStatus"].ToString().Equals("InProgress"))
                 {
                     <a href="@Url.Action("Create", "Tasks")" class="btn btn-primary">New Task</a>
-                }
-                <div class="pull-right">
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                            Filter by status
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="@Url.Action("Index", "Tasks")" class="dropdown-item">Show all</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Status", "Tasks", new { status = "InProgress" })" class="dropdown-item">In Progress</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Status", "Tasks", new { status = "Ready" })" class="dropdown-item">Ready</a>
-                            </li>
-                        </ul>
+                    <div class="pull-right">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                Filter by status
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="@Url.Action("Index", "Tasks")" class="dropdown-item">Show all</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Status", "Tasks", new { status = "InProgress" })" class="dropdown-item">In Progress</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Status", "Tasks", new { status = "Ready" })" class="dropdown-item">Ready</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     </div>
