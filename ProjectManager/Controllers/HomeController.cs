@@ -5,6 +5,7 @@
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
     using System;
+    using PagedList;
     using System.Collections.Generic;
     using System.Web.Mvc;
 
@@ -22,7 +23,7 @@
             uow = new UnitOfWork(context);
         }
 
-        public ActionResult Index(string developerUsername)
+        public ActionResult Index(string developerUsername, int? page)
         {
             if(Session["ID"] != null)
             {
@@ -34,12 +35,19 @@
                 {
                     foreach(Developer developer in developers)
                     {
-                        if(developer.Username.ToLower().Contains(developerUsername))
+                        if(developer.Username.Contains(developerUsername))
                         {
                             DeveloperViewModel developerSearchModel = new DeveloperViewModel(developer);
                             model.Add(developerSearchModel);
                         }
                     }
+
+                    ///////////////////////////////////////////////////////
+                    //                                                   //
+                    // Когато се извежда информация използвайки търсачка //
+                    //      получената информация не се страницира       //
+                    //                                                   //
+                    ///////////////////////////////////////////////////////
 
                     return View(model);
                 }
@@ -50,7 +58,34 @@
                     model.Add(developerModel);
                 }
 
-                return View(model);
+                int pageSize = 4;
+                int pageNumber = (page ?? 1);
+                int maxPages = model.Count / (pageSize - 1);
+
+                ViewBag.Page = pageNumber;
+                ViewBag.Max = maxPages;
+
+                //////////////////////////////////////////////////////
+                //                                                  //
+                // Когато се извежда цялостна информация за всички  //
+                // регистрирани потребители, получената информация  //
+                //                 се страницира                    //
+                //                                                  //
+                //////////////////////////////////////////////////////
+
+                try
+                {
+                    return View(model.ToPagedList(pageNumber, pageSize));
+                }
+                catch
+                {
+                    page = 1;
+                    pageNumber = (int)page;
+
+                    ViewBag.Page = pageNumber;
+
+                    return View(model.ToPagedList(pageNumber, pageSize));
+                }
             }
 
             return View();

@@ -13,3 +13,5 @@ E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAcce
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\obj\Debug\ProjectManagerDataAccess.csproj.CopyComplete
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\obj\Debug\ProjectManagerDataAccess.dll
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\obj\Debug\ProjectManagerDataAccess.pdb
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\bin\Debug\PagedList.dll
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDataAccess\bin\Debug\PagedList.xml

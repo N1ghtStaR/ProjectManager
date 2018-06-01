@@ -200,3 +200,7 @@ D:\download_internet_browser\ProjectManager-mvc (1)\ProjectManager-mvc\ProjectMa
 D:\download_internet_browser\ProjectManager-mvc (1)\ProjectManager-mvc\ProjectManager\obj\Debug\ProjectManager.csproj.CopyComplete
 D:\download_internet_browser\ProjectManager-mvc (1)\ProjectManager-mvc\ProjectManager\obj\Debug\ProjectManager.dll
 D:\download_internet_browser\ProjectManager-mvc (1)\ProjectManager-mvc\ProjectManager\obj\Debug\ProjectManager.pdb
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\PagedList.dll
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\PagedList.Mvc.dll
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\PagedList.xml
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManager\bin\PagedList.Mvc.xml
