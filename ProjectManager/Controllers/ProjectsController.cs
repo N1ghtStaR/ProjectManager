@@ -1,7 +1,6 @@
 ﻿namespace ProjectManager.Controllers
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Net;
     using System.Web.Mvc;
@@ -10,6 +9,7 @@
     using ProjectManagerDataAccess;
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
+    using PagedList;
 
     [IsAuthenticated]
     public class ProjectsController : Controller
@@ -26,11 +26,26 @@
             uow = new UnitOfWork(context);
         }
 
-        public ActionResult Index(string projectTitle)
+        public ActionResult Index(string projectTitle, int? page)
         {
             IEnumerable<Project> projects = uow.ProjectRepository.GetAllProjectsForUser((int)Session["ID"]);
 
             List<ProjectViewModel> model = new List<ProjectViewModel>();
+
+            if (!String.IsNullOrEmpty(projectTitle))
+            {
+
+                foreach (Project project in projects)
+                {
+                    if (project.Title.ToLower().Contains(projectTitle))
+                    {
+                        ProjectViewModel projectSearchModel = new ProjectViewModel(project);
+                        model.Add(projectSearchModel);
+                    }
+                }
+
+                return View(model);
+            }
 
             foreach (Project project in projects)
             {
@@ -38,23 +53,26 @@
                 model.Add(projectModel);
             }
 
-            if (!String.IsNullOrEmpty(projectTitle))
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            int maxPages = model.Count / (pageSize - 1);
+
+            ViewBag.Page = pageNumber;
+            ViewBag.Max = maxPages;
+
+            try
             {
-                List<ProjectViewModel> modelSearch = new List<ProjectViewModel>();
-
-                foreach(Project project in projects)
-                {
-                    if(project.Title.ToLower().Contains(projectTitle))
-                    {
-                        ProjectViewModel projectSearchModel = new ProjectViewModel(project);
-                        modelSearch.Add(projectSearchModel);
-                    }
-                }
-
-                return View(modelSearch);
+                return View(model.ToPagedList(pageNumber, pageSize));
             }
+            catch
+            {
+                page = 1;
+                pageNumber = (int)page;
 
-            return View(model);
+                ViewBag.Page = pageNumber;
+
+                return View(model.ToPagedList(pageNumber, pageSize));
+            }
         }
         
         public ActionResult Status(string status)
@@ -85,18 +103,27 @@
         {
             if (ModelState.IsValid)
             {
-                Project project = new Project
+                try
                 {
-                    ID = projectModel.ID,
-                    DeveleperID = projectModel.DeveleperID,
-                    Title = projectModel.Title,
-                    Description = projectModel.Description,
-                    Category = (Project.Division)projectModel.Category,
-                    Status = (Project.Statistic)projectModel.Status
-                };
+                    Project project = new Project
+                    {
+                        ID = projectModel.ID,
+                        DeveleperID = projectModel.DeveleperID,
+                        Title = projectModel.Title,
+                        Description = projectModel.Description,
+                        Category = (Project.Division)projectModel.Category,
+                        Status = (Project.Statistic)projectModel.Status
+                    };
 
-                uow.ProjectRepository.Create(project);
-                uow.ProjectRepository.Save();
+                    uow.ProjectRepository.Create(project);
+                    uow.ProjectRepository.Save();
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again later!");
+
+                    return View(projectModel);
+                }
 
                 return RedirectToAction("Index", "Projects");
             }
@@ -147,20 +174,29 @@
                     }
                 }
 
-                Project project = new Project
+                try
                 {
-                    ID = projectModel.ID,
-                    DeveleperID = projectModel.DeveleperID,
-                    Title = projectModel.Title,
-                    Description = projectModel.Description,
-                    Category = (Project.Division)projectModel.Category,
-                    Status = (Project.Statistic)projectModel.Status
-                };
+                    Project project = new Project
+                    {
+                        ID = projectModel.ID,
+                        DeveleperID = projectModel.DeveleperID,
+                        Title = projectModel.Title,
+                        Description = projectModel.Description,
+                        Category = (Project.Division)projectModel.Category,
+                        Status = (Project.Statistic)projectModel.Status
+                    };
 
-                uow.ProjectRepository.Update(project);
-                uow.ProjectRepository.Save();
+                    uow.ProjectRepository.Update(project);
+                    uow.ProjectRepository.Save();
 
-                Session["ProjectID"] = project.ID;
+                    Session["ProjectID"] = project.ID;
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Enable to edit user's account. Try again later!");
+
+                    return View("Confirm", projectModel);
+                }
 
                 return RedirectToAction("Create", "Incomes");
             }
@@ -197,18 +233,27 @@
         {
             if (ModelState.IsValid)
             {
-                Project project = new Project
+                try
                 {
-                    ID = projectModel.ID,
-                    DeveleperID = projectModel.DeveleperID,
-                    Title = projectModel.Title,
-                    Description = projectModel.Description,
-                    Category = (Project.Division)projectModel.Category,
-                    Status = (Project.Statistic)projectModel.Status
-                };
+                    Project project = new Project
+                    {
+                        ID = projectModel.ID,
+                        DeveleperID = projectModel.DeveleperID,
+                        Title = projectModel.Title,
+                        Description = projectModel.Description,
+                        Category = (Project.Division)projectModel.Category,
+                        Status = (Project.Statistic)projectModel.Status
+                    };
 
-                uow.ProjectRepository.Update(project);
-                uow.ProjectRepository.Save();
+                    uow.ProjectRepository.Update(project);
+                    uow.ProjectRepository.Save();
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again later!");
+
+                    return View(projectModel);
+                }
 
                 return RedirectToAction("Index", "Projects");
             }
@@ -245,13 +290,26 @@
 
             IEnumerable<Task> tasks = uow.TaskRepository.GetAllTaskForProject(id);
 
-            foreach(Task task in tasks)
+            try
             {
-                uow.TaskRepository.Delete(task);
-                uow.TaskRepository.Save();
+                if (tasks != null)
+                {
+                    foreach (Task task in tasks)
+                    {
+                        uow.TaskRepository.Delete(task);
+                        uow.TaskRepository.Save();
+                    }
+                }
+
+                uow.ProjectRepository.Delete(project);
+                uow.ProjectRepository.Save();
             }
-            uow.ProjectRepository.Delete(project);
-            uow.ProjectRepository.Save();
+            catch
+            {
+                ModelState.AddModelError("", "Unable to delete this project right now!");
+
+                return View("Confirm", project);
+            }
 
             return RedirectToAction("Index", "Projects");
         }

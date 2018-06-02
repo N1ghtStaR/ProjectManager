@@ -1,5 +1,4 @@
-﻿@using PagedList.Mvc
-@model IEnumerable<ProjectManager.Models.DeveloperViewModel>
+﻿@model IEnumerable<ProjectManager.Models.DeveloperViewModel>
 
 @{
     ViewBag.Title = "HomePage";
@@ -45,20 +44,17 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                if (!item.ID.Equals(Session["ID"]))
-                                {
-                                    <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Username)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Role)
-                                        </td>
-                                        <td>
-                                            <a href="@Url.Action("AccountDetails", "Authentication", new { id = item.ID })" class="btn btn-primary glyphicon glyphicon-user"></a>
-                                        </td>
-                                    </tr>
-                                }
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Username)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Role)
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("AccountDetails", "Authentication", new { id = item.ID })" class="btn btn-primary glyphicon glyphicon-user"></a>
+                                    </td>
+                                </tr>
                             }
                         </tbody>
                     </table>
@@ -71,7 +67,7 @@
                         {
                             <a href="@Url.Action("Index", "Home", new { page = ViewBag.Page - 1 })" class="btn btn-default glyphicon glyphicon-menu-left"></a>
                         }
-                        @if (ViewBag.Page != ViewBag.Max)
+                        @if (ViewBag.Page != ViewBag.Max && ViewBag.Max > 1)
                         {
                             <a href="@Url.Action("Index", "Home", new { page = ViewBag.Page + 1 })" class="btn btn-default glyphicon glyphicon-menu-right"></a>
                         }

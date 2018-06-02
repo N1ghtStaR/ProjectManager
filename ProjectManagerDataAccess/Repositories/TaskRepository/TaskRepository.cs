@@ -19,22 +19,30 @@
 
         public IEnumerable<Task> GetAllTaskForProject(int id)
         {
-            return Context.Tasks.Where(t => t.ProjectID.Equals(id)).ToList();
+            return Context.Tasks
+                            .Where(t => t.ProjectID.Equals(id))
+                            .OrderByDescending(i => i.ID)
+                            .ToList();
         }
 
         public IEnumerable<Task> GetTasksByStatus(int id, string status)
         {
-            return Context.Tasks.Where(t => t.Status.ToString().Equals(status) && t.ProjectID.Equals(id)).ToList();
+            return Context.Tasks
+                            .Where(t => t.Status.ToString().Equals(status) && t.ProjectID.Equals(id))
+                            .OrderByDescending(i => i.ID)
+                            .ToList();
         }
 
         public Task GetTaskByID(int id)
         {
-            return Context.Tasks.Find(id);
+            return Context.Tasks
+                            .Find(id);
         }
 
         public void Create(Task task)
         {
-            Context.Tasks.Add(task);
+            Context.Tasks
+                    .Add(task);
         }
 
         public void Update(Task task)
@@ -44,7 +52,8 @@
 
         public void Delete(Task task)
         {
-            Context.Tasks.Remove(task);
+            Context.Tasks
+                    .Remove(task);
         }
 
         public void Save()

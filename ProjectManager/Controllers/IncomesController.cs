@@ -7,6 +7,7 @@
     using ProjectManagerDataAccess;
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
+    using PagedList;
 
     [IsAuthenticated]
     public class IncomesController : Controller
@@ -23,7 +24,7 @@
             uow = new UnitOfWork(context);
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             IEnumerable<Income> incomes = uow.IncomeRepository.GetIncomesForUser((int)Session["ID"]);
 
@@ -37,7 +38,26 @@
                     model.Add(incomeModel);
                 }
 
-                return View(model);
+                int pageSize = 3;
+                int pageNumber = (page ?? 1);
+                int maxPages = model.Count / (pageSize - 1);
+
+                ViewBag.Page = pageNumber;
+                ViewBag.Max = maxPages;
+
+                try
+                {
+                    return View(model.ToPagedList(pageNumber, pageSize));
+                }
+                catch
+                {
+                    page = 1;
+                    pageNumber = (int)page;
+
+                    ViewBag.Page = pageNumber;
+
+                    return View(model.ToPagedList(pageNumber, pageSize));
+                }
             }
 
             return View();
@@ -60,17 +80,26 @@
         {
             if (ModelState.IsValid)
             {
-                Income income = new Income
+                try
                 {
-                    ProjectID = incomeModel.ProjectID,
-                    DeveleperID = incomeModel.DeveleperID,
-                    Title = incomeModel.Title,
-                    Amount = incomeModel.Amount,
-                    ReleaseDate = incomeModel.ReleaseDate
-                };
+                    Income income = new Income
+                    {
+                        ProjectID = incomeModel.ProjectID,
+                        DeveleperID = incomeModel.DeveleperID,
+                        Title = incomeModel.Title,
+                        Amount = incomeModel.Amount,
+                        ReleaseDate = incomeModel.ReleaseDate
+                    };
 
-                uow.IncomeRepository.Create(income);
-                uow.IncomeRepository.Save();
+                    uow.IncomeRepository.Create(income);
+                    uow.IncomeRepository.Save();
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Unable to add new income right now! Try again later!");
+
+                    return View(incomeModel);
+                }
 
                 return RedirectToAction("Index");
             }

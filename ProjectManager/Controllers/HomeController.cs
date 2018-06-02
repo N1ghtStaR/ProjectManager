@@ -27,7 +27,7 @@
         {
             if(Session["ID"] != null)
             {
-                IEnumerable<Developer> developers = uow.DeveloperRepository.GetAllDevelopers();
+                IEnumerable<Developer> developers = uow.DeveloperRepository.GetAllDevelopers((int)Session["ID"]);
 
                 List<DeveloperViewModel> model = new List<DeveloperViewModel>();
 
@@ -41,13 +41,6 @@
                             model.Add(developerSearchModel);
                         }
                     }
-
-                    ///////////////////////////////////////////////////////
-                    //                                                   //
-                    // Когато се извежда информация използвайки търсачка //
-                    //      получената информация не се страницира       //
-                    //                                                   //
-                    ///////////////////////////////////////////////////////
 
                     return View(model);
                 }
@@ -64,14 +57,6 @@
 
                 ViewBag.Page = pageNumber;
                 ViewBag.Max = maxPages;
-
-                //////////////////////////////////////////////////////
-                //                                                  //
-                // Когато се извежда цялостна информация за всички  //
-                // регистрирани потребители, получената информация  //
-                //                 се страницира                    //
-                //                                                  //
-                //////////////////////////////////////////////////////
 
                 try
                 {

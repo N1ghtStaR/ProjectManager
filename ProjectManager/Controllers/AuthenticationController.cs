@@ -36,27 +36,39 @@
         {
             if (ModelState.IsValid)
             {
-                Developer developer = new Developer
+                try
                 {
-                    ID = developerModel.ID,
-                    Username = developerModel.Username,
-                    Email = developerModel.Email,
-                    Password = developerModel.Password,
-                    Role = (Developer.Character)developerModel.Role
-                };
+                    Developer registered = uow.DeveloperRepository.IsRegistered(developerModel.Username); 
+                                                                                                          
+                    ModelState.AddModelError("", "User with that username is already registered!");       
+                                                                                                          
+                    return View(developerModel);                                                          
+                }
+                catch
+                {
+                    Developer developer = new Developer
+                    {
+                        ID = developerModel.ID,
+                        Username = developerModel.Username,
+                        Email = developerModel.Email,
+                        Password = developerModel.Password,
+                        Role = (Developer.Character)developerModel.Role
+                    };
 
-                uow.DeveloperRepository.Registration(developer);
-                uow.DeveloperRepository.Save();
+                    uow.DeveloperRepository.Registration(developer);
+                    uow.DeveloperRepository.Save();
 
-                Session["ID"] = developerModel.ID;
-                Session["Username"] = developerModel.Username;
-                Session["Role"] = developerModel.Role;
-            
-                Session["ProjectID"] = null;
-                Session["ProjectTitle"] = null;
-                Session["ProjectStatus"] = null;
+                    Session["ID"] = developerModel.ID;
+                    Session["Username"] = developerModel.Username;
+                    Session["Role"] = developerModel.Role;
 
-                return RedirectToAction("Index", "Home");
+                    Session["ProjectID"] = null;
+                    Session["ProjectTitle"] = null;
+                    Session["ProjectStatus"] = null;
+
+                    return RedirectToAction("Index", "Home");
+                }
+                
             }
 
             return View(developerModel);
@@ -90,7 +102,7 @@
                 }
                 catch
                 {
-                    ModelState.AddModelError("", "Login data is incorrect!");
+                    ModelState.AddModelError("", "Username or password are incorrect!");
                 }
             }
 
@@ -104,18 +116,26 @@
         {
             if(ModelState.IsValid)
             {
-                Developer developer = new Developer()
+                try
                 {
-                    ID = developerModel.ID,
-                    Username = developerModel.Username,
-                    Email = developerModel.Email,
-                    Password = developerModel.Password,
-                    Role = (Developer.Character)developerModel.Role
-                };
+                    Developer developer = new Developer()
+                    {
+                        ID = developerModel.ID,
+                        Username = developerModel.Username,
+                        Email = developerModel.Email,
+                        Password = developerModel.Password,
+                        Role = (Developer.Character)developerModel.Role
+                    };
 
-                uow.DeveloperRepository.PromoteOrDemote(developer);
-                uow.DeveloperRepository.Save();
-                
+                    uow.DeveloperRepository.PromoteOrDemote(developer);
+                    uow.DeveloperRepository.Save();
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again later!");
+
+                    return View("AccountDetails", developerModel);
+                }
                 return RedirectToAction("Index", "Home");
             }
 

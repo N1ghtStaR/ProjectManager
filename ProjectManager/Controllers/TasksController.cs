@@ -9,6 +9,7 @@
     using ProjectManagerDataAccess;
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
+    using PagedList;
 
     [IsAuthenticated]
     public class TasksController : Controller
@@ -42,7 +43,7 @@
         }
 
 
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             IEnumerable<Task> tasks = uow.TaskRepository.GetAllTaskForProject((int)Session["ProjectID"]);
 
@@ -54,7 +55,26 @@
                 model.Add(taskModel);
             }
 
-            return View(model);
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            int maxPages = model.Count / (pageSize - 1);
+
+            ViewBag.Page = pageNumber;
+            ViewBag.Max = maxPages;
+
+            try
+            {
+                return View(model.ToPagedList(pageNumber, pageSize));
+            }
+            catch
+            {
+                page = 1;
+                pageNumber = (int)page;
+
+                ViewBag.Page = pageNumber;
+
+                return View(model.ToPagedList(pageNumber, pageSize));
+            }
         }
         
         public ActionResult Status (string status)

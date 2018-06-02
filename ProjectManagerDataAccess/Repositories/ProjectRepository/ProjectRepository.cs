@@ -19,27 +19,38 @@
 
         public IEnumerable<Project> GetAllProjectsForUser(int id)
         {
-            return Context.Projects.Where(p => p.DeveleperID.Equals(id)).ToList();
+            return Context.Projects
+                            .Where(p => p.DeveleperID.Equals(id))
+                            .OrderByDescending(i => i.ID)
+                            .ToList();
         }
 
         public IEnumerable<Project> GetProjectsByTitle(string title, int id)
         {
-            return Context.Projects.Where(p => p.Title.Contains(title) && p.DeveleperID.Equals(id)).ToList();
+            return Context.Projects
+                            .Where(p => p.Title.Contains(title) && p.DeveleperID.Equals(id))
+                            .OrderByDescending(i => i.ID)
+                            .ToList();
         }
 
         public IEnumerable<Project> GetProjectsByStatus(string status, int id)
         {
-            return Context.Projects.Where(p => p.Status.ToString().Equals(status) && p.DeveleperID.Equals(id)).ToList();
+            return Context.Projects
+                            .Where(p => p.Status.ToString().Equals(status) && p.DeveleperID.Equals(id))
+                            .OrderByDescending(i => i.ID)
+                            .ToList();
         }
 
         public Project GetProjectByID(int id)
         {
-            return Context.Projects.Find(id);
+            return Context.Projects
+                            .Find(id);
         }
 
         public void Create(Project project)
         {
-            Context.Projects.Add(project);
+            Context.Projects
+                    .Add(project);
         }
 
         public void Update(Project project)
@@ -48,7 +59,8 @@
         }
         public void Delete(Project project)
         {
-            Context.Projects.Remove(project);
+            Context.Projects
+                        .Remove(project);
         }
 
         public void Save()

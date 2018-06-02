@@ -6,10 +6,11 @@
 
     public interface IDeveloperRepository : IDisposable
     {
-        IEnumerable<Developer> GetAllDevelopers();
+        IEnumerable<Developer> GetAllDevelopers(int id);
         IEnumerable<Developer> GetDevelopersByUsername(string username);
 
         Developer LogIn(string username, string password);
+        Developer IsRegistered(string username);
         Developer GetDeveloperByID(int developerID);
 
         void Registration(Developer developer);

@@ -1,4 +1,4 @@
-﻿@model List<ProjectManager.Models.TaskViewModel>
+﻿@model IEnumerable<ProjectManager.Models.TaskViewModel>
 
 @{
     ViewBag.Title = "Index";
@@ -73,6 +73,24 @@
                         </div>
                     </div>
                 }
+                <div class="btn-group" role="group" aria-label="...">
+                    @if (ViewBag.Page >= 3)
+                    {
+                        <a href="@Url.Action("Index", "Tasks", new { page = 1 })" class="btn btn-default glyphicon glyphicon-step-backward"></a>
+                    }
+                    @if (ViewBag.Page > 1)
+                    {
+                        <a href="@Url.Action("Index", "Tasks", new { page = ViewBag.Page - 1 })" class="btn btn-default glyphicon glyphicon-menu-left"></a>
+                    }
+                    @if (ViewBag.Page != ViewBag.Max && ViewBag.Max > 1)
+                    {
+                        <a href="@Url.Action("Index", "Tasks", new { page = ViewBag.Page + 1 })" class="btn btn-default glyphicon glyphicon-menu-right"></a>
+                    }
+                    @if (ViewBag.Page < ViewBag.Max - 1)
+                    {
+                        <a href="@Url.Action("Index", "Tasks", new { page = ViewBag.Max })" class="btn btn-default glyphicon glyphicon-step-forward"></a>
+                    }
+                </div>
             </div>
         </div>
     </div>
