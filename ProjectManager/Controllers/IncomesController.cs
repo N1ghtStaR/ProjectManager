@@ -26,6 +26,14 @@
 
         public ActionResult Index(int? page)
         {
+            ///////////////////////////////////////////////////////////
+            //                                                       //
+            //   Взима от базата данни всички записи за съответния   //
+            //   потребител и ги връща на View()-то данните в        //
+            //   сранизирана форма                                   //
+            //                                                       //
+            ///////////////////////////////////////////////////////////
+
             IEnumerable<Income> incomes = uow.IncomeRepository.GetIncomesForUser((int)Session["ID"]);
 
             if(incomes != null)

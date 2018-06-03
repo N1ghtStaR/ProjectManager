@@ -28,6 +28,15 @@
 
         public ActionResult Index(string projectTitle, int? page)
         {
+            /////////////////////////////////////////////////////////////////
+            //                                                             //
+            //   Взима цялата информация за съответния логнат потребител   //
+            //      1. Цялата -> страницирана                              //
+            //      2. Търсене по заглавие -> | В соров                    //
+            //      3. Сортиране по статус -> |   вид                      //
+            //                                                             //
+            /////////////////////////////////////////////////////////////////
+
             IEnumerable<Project> projects = uow.ProjectRepository.GetAllProjectsForUser((int)Session["ID"]);
 
             List<ProjectViewModel> model = new List<ProjectViewModel>();
@@ -120,7 +129,7 @@
                 }
                 catch
                 {
-                    ModelState.AddModelError("", "Unable to save changes. Try again later!");
+                    ModelState.AddModelError("", "Database error! Unable to save changes. Try again later!");
 
                     return View(projectModel);
                 }
@@ -193,7 +202,7 @@
                 }
                 catch
                 {
-                    ModelState.AddModelError("", "Enable to edit user's account. Try again later!");
+                    ModelState.AddModelError("", "Database error! Enable to edit user's account. Try again later!");
 
                     return View("Confirm", projectModel);
                 }
@@ -294,12 +303,12 @@
             {
                 if (tasks != null)
                 {
-                    foreach (Task task in tasks)
-                    {
-                        uow.TaskRepository.Delete(task);
-                        uow.TaskRepository.Save();
-                    }
-                }
+                    foreach (Task task in tasks)          ///////////////////////////////////////////////////
+                    {                                     //                                               //
+                        uow.TaskRepository.Delete(task);  //   За да бъде изтрит проект, трябва да бъдат   // 
+                        uow.TaskRepository.Save();        //   изтрити всички пренадлежащи му задачи       //
+                    }                                     //                                               //
+                }                                         ///////////////////////////////////////////////////
 
                 uow.ProjectRepository.Delete(project);
                 uow.ProjectRepository.Save();

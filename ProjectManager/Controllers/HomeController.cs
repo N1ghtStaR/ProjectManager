@@ -25,6 +25,15 @@
 
         public ActionResult Index(string developerUsername, int? page)
         {
+            //////////////////////////////////////////////////////////////////
+            //                                                              //
+            //   Взима информация от базата данни единствено в случай, че   //
+            //   има логнат потребител. Връца информацията получена от      //
+            //   базата страницирана само когато се извежда цялостната      //
+            //   информация ( без филтрация ).                              //
+            //                                                              //
+            //////////////////////////////////////////////////////////////////
+
             if(Session["ID"] != null)
             {
                 IEnumerable<Developer> developers = uow.DeveloperRepository.GetAllDevelopers((int)Session["ID"]);
@@ -42,7 +51,7 @@
                         }
                     }
 
-                    return View(model);
+                    return View(model);  //Връща информацията в деректен вид
                 }
 
                 foreach (Developer developer in developers)
@@ -51,18 +60,18 @@
                     model.Add(developerModel);
                 }
 
-                int pageSize = 4;
-                int pageNumber = (page ?? 1);
-                int maxPages = model.Count / (pageSize - 1);
+                int pageSize = 4;                             // Брой записи на страница
+                int pageNumber = (page ?? 1);                 // Номер на текуща страница
+                int maxPages = model.Count / (pageSize - 1);  // Брой на всички страници
 
                 ViewBag.Page = pageNumber;
                 ViewBag.Max = maxPages;
 
                 try
                 {
-                    return View(model.ToPagedList(pageNumber, pageSize));
+                    return View(model.ToPagedList(pageNumber, pageSize));  //Връща информацията в странизиран вид  
                 }
-                catch
+                catch // if ( pageNumber < 0 )
                 {
                     page = 1;
                     pageNumber = (int)page;
