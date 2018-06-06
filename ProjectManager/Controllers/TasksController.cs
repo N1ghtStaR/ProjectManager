@@ -20,8 +20,8 @@
 
         public TasksController()
         {
-            this.uow = new UnitOfWork(new ProjectManagerDbContext());
-            this.factory = new Factory();
+            uow = new UnitOfWork(new ProjectManagerDbContext());
+            factory = new Factory();
         }
 
         public TasksController(ProjectManagerDbContext context)
@@ -113,10 +113,21 @@
         {
             if (ModelState.IsValid)
             {
-                Task task = factory.TaskFactory.New(taskModel);
+                try
+                {
+                    Task task = factory.TaskFactory.New(taskModel);
 
-                uow.TaskRepository.Create(task);
-                uow.TaskRepository.Save();
+                    uow.TaskRepository.Create(task);
+                    uow.TaskRepository.Save();
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Database error! Unable to save changes. Try again later!");
+
+                    return View(taskModel);
+                }
+
+                TempData["Message"] = "New task have been successfully added!";
 
                 return RedirectToAction("Index", "Tasks");
             }
@@ -153,11 +164,22 @@
         {
             if (ModelState.IsValid)
             {
-                Task task = factory.TaskFactory.New(taskModel);
+                try
+                {
+                    Task task = factory.TaskFactory.New(taskModel);
 
-                uow.TaskRepository.Update(task);
-                uow.TaskRepository.Save();
-                
+                    uow.TaskRepository.Update(task);
+                    uow.TaskRepository.Save();
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Database error! Unable to save changes. Try again later!");
+
+                    return View(taskModel);
+                }
+
+                TempData["Message"] = "New task have been successfully updated!";
+
                 return RedirectToAction("Index", "Tasks");
             }
 
@@ -194,10 +216,21 @@
         {
             if (ModelState.IsValid)
             {
-                Task task = factory.TaskFactory.New(taskModel);
+                try
+                {
+                    Task task = factory.TaskFactory.New(taskModel);
 
-                uow.TaskRepository.Update(task);
-                uow.TaskRepository.Save();
+                    uow.TaskRepository.Update(task);
+                    uow.TaskRepository.Save();
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Database error! Unable to save changes. Try again later!");
+
+                    return View(taskModel);
+                }
+
+                TempData["Message"] = "New task have been successfully finished!";
 
                 return RedirectToAction("Index", "Tasks");
             }

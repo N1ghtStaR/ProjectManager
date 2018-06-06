@@ -20,8 +20,8 @@
 
         public ProjectsController()
         {
-            this.uow = new UnitOfWork(new ProjectManagerDbContext());
-            this.factory = new Factory();
+            uow = new UnitOfWork(new ProjectManagerDbContext());
+            factory = new Factory();
         }
 
         public ProjectsController(ProjectManagerDbContext context)
@@ -120,6 +120,8 @@
                     return View(projectModel);
                 }
 
+                TempData["Message"] = "New project have successfully added!";
+
                 return RedirectToAction("Index", "Projects");
             }
 
@@ -164,6 +166,8 @@
                     {
                         if (task.Status.ToString().Equals("InProgress"))
                         {
+                            TempData["Message"] = "Project '" + projectModel.Title + "' have unfinished tasks!";
+
                             return RedirectToAction("Status", "Tasks", routeValues: new { ProjectID = projectModel.ID, Status = "InProgress" });
                         }
                     }
@@ -234,6 +238,8 @@
                     return View(projectModel);
                 }
 
+                TempData["Message"] = "Project '" + projectModel.Title + "' have been successfully updated!";
+
                 return RedirectToAction("Index", "Projects");
             }
 
@@ -289,6 +295,8 @@
 
                 return View("Confirm", project);
             }
+
+            TempData["Message"] = "Project '" + project.Title + "' have been successfully deleted!";
 
             return RedirectToAction("Index", "Projects");
         }

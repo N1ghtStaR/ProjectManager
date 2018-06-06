@@ -18,6 +18,10 @@
                 }
             </div>
             <div class="panel-body">
+                @if (TempData["Message"] != null)
+                {
+                    <h4 class="text-muted text-success">@TempData["Message"]</h4>
+                }
                 <table style="width:100%" class="table table-striped table-bordered table-hover datatables">
                     <thead>
                         <tr>

@@ -19,7 +19,7 @@
 
         public HomeController()
         {
-            this.uow = new UnitOfWork(new ProjectManagerDbContext());
+            uow = new UnitOfWork(new ProjectManagerDbContext());
         }
 
         public HomeController(ProjectManagerDbContext context)
@@ -29,15 +29,6 @@
 
         public ActionResult Index(string developerUsername, int? page)
         {
-            //////////////////////////////////////////////////////////////////
-            //                                                              //
-            //   Взима информация от базата данни единствено в случай, че   //
-            //   има логнат потребител. Връца информацията получена от      //
-            //   базата страницирана само когато се извежда цялостната      //
-            //   информация ( без филтрация ).                              //
-            //                                                              //
-            //////////////////////////////////////////////////////////////////
-
             if(Session["ID"] != null)
             {
                 IEnumerable<Developer> developers = uow.DeveloperRepository.GetAllDevelopers((int)Session["ID"]);
@@ -55,7 +46,7 @@
                         }
                     }
 
-                    return View(model);  //Връща информацията в деректен вид
+                    return View(model);
                 }
 
                 foreach (Developer developer in developers)
@@ -64,18 +55,18 @@
                     model.Add(developerModel);
                 }
 
-                int pageSize = 4;                             // Брой записи на страница
-                int pageNumber = (page ?? 1);                 // Номер на текуща страница
-                int maxPages = model.Count / (pageSize - 1);  // Брой на всички страници
+                int pageSize = 4;                            
+                int pageNumber = (page ?? 1);                 
+                int maxPages = model.Count / (pageSize - 1);  
 
                 ViewBag.Page = pageNumber;
                 ViewBag.Max = maxPages;
 
                 try
                 {
-                    return View(model.ToPagedList(pageNumber, pageSize));  //Връща информацията в странизиран вид  
+                    return View(model.ToPagedList(pageNumber, pageSize));  
                 }
-                catch // if ( pageNumber < 0 )
+                catch
                 {
                     page = 1;
                     pageNumber = (int)page;

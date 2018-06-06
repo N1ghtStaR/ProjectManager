@@ -18,8 +18,8 @@
 
         public IncomesController()
         {
-            this.uow = new UnitOfWork(new ProjectManagerDbContext());
-            this.factory = new Factory();
+            uow = new UnitOfWork(new ProjectManagerDbContext());
+            factory = new Factory();
         }
 
         public IncomesController(ProjectManagerDbContext context)
@@ -96,6 +96,8 @@
 
                     return View(incomeModel);
                 }
+
+                TempData["Message"] = "New income have been successfully added!";
 
                 return RedirectToAction("Index");
             }

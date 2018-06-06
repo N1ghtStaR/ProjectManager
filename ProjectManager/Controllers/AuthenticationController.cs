@@ -17,8 +17,8 @@
 
         public AuthenticationController()
         {
-            this.uow = new UnitOfWork(new ProjectManagerDbContext());
-            this.factory = new Factory();
+            uow = new UnitOfWork(new ProjectManagerDbContext());
+            factory = new Factory();
         }
 
         public AuthenticationController(ProjectManagerDbContext context)
@@ -134,6 +134,9 @@
 
                     return View("AccountDetails", developerModel);
                 }
+
+                TempData["UpdatedDeveloper"] = developerModel.Username + "'s role have been updated!";
+
                 return RedirectToAction("Index", "Home");
             }
 
