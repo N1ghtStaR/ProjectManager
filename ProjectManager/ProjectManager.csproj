@@ -56,6 +56,9 @@
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
       <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
     </Reference>
@@ -125,9 +128,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.ApplicationInsights">
       <HintPath>..\packages\Microsoft.ApplicationInsights.2.2.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
@@ -159,6 +159,15 @@
     <Compile Include="Controllers\IncomesController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
+    <Compile Include="Factory\Factories\DeveloperFactory\DeveloperFactory.cs" />
+    <Compile Include="Factory\Factories\DeveloperFactory\IDeveloperFactory.cs" />
+    <Compile Include="Factory\Factories\IncomeFactory\IIncomeFactory.cs" />
+    <Compile Include="Factory\Factories\IncomeFactory\IncomeFactory.cs" />
+    <Compile Include="Factory\Factories\ProjectFactory\IProjectFactory.cs" />
+    <Compile Include="Factory\Factories\ProjectFactory\ProjectFactory.cs" />
+    <Compile Include="Factory\Factories\TaskFactory\ITaskFactory.cs" />
+    <Compile Include="Factory\Factories\TaskFactory\TaskFactory.cs" />
+    <Compile Include="Factory\Factory.cs" />
     <Compile Include="Filters\IsAuthenticated.cs" />
     <Compile Include="Filters\NotAuthenticated.cs" />
     <Compile Include="Global.asax.cs">
@@ -185,6 +194,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -250,6 +260,9 @@
       <Project>{32e369e4-66b8-4d26-b4db-5e20c13ac9aa}</Project>
       <Name>ProjectManagerDB</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

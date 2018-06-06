@@ -8,14 +8,17 @@
     using ProjectManagerDataAccess;
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
+    using ProjectManagerFactory;
 
     public class AuthenticationController : Controller
     {
         private readonly UnitOfWork uow;
+        private readonly Factory factory; 
 
         public AuthenticationController()
         {
             this.uow = new UnitOfWork(new ProjectManagerDbContext());
+            this.factory = new Factory();
         }
 
         public AuthenticationController(ProjectManagerDbContext context)
@@ -46,20 +49,13 @@
                 }
                 catch
                 {
-                    try                                                           ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    {                                                             //                                                                                                                   //
-                        Developer developer = new Developer                       //   1. Проверка за валидността на DeveloperViewModel                                                                //
-                        {                                                         //   -------------------------------------------------------------------------------------------------------------   //
-                            ID = developerModel.ID,                               //   2. Проверка дали вече съществува регистриран потребител със сответния username                                  //
-                            Username = developerModel.Username,                   //      2.1 False -> Връща грещка, че вече съществува потребител със съответния username                             //
-                            Email = developerModel.Email,                         //      2.2 True -> Exception -> Инстанцира се нов обект от клас Developer присвояващ данните на developerModel      //
-                            Password = developerModel.Password,                   //   -------------------------------------------------------------------------------------------------------------   //
-                            Role = (Developer.Character)developerModel.Role       //      2.3 Проверка за грешки при добавянето на новия обект в базата                                                //
-                        };                                                        //         2.3.1 True -> Exception -> Връща грешка в View()-то                                                       //
-                                                                                  //         2.3.2 False -> Създава нов запис в базата                                                                 //
-                        uow.DeveloperRepository.Registration(developer);          //                                                                                                                   //
-                        uow.DeveloperRepository.Save();                           //   !!! Трябва да хеширам паролите -> сега ме мързи -> ДА ГО НАПРАВЯ УТРЕ !!!                                       //
-                    }                                                             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    try                                                           
+                    {                                                             
+                        Developer developer = factory.DeveloperFactory.New(developerModel);                                                 
+                                                                                  
+                        uow.DeveloperRepository.Registration(developer);          
+                        uow.DeveloperRepository.Save();                           
+                    }                                                             
                     catch
                     {
                         ModelState.AddModelError("", "There was a problem creating your account!");
@@ -127,14 +123,7 @@
             {
                 try
                 {
-                    Developer developer = new Developer()
-                    {
-                        ID = developerModel.ID,
-                        Username = developerModel.Username,
-                        Email = developerModel.Email,
-                        Password = developerModel.Password,
-                        Role = (Developer.Character)developerModel.Role
-                    };
+                    Developer developer = factory.DeveloperFactory.New(developerModel);
 
                     uow.DeveloperRepository.PromoteOrDemote(developer);
                     uow.DeveloperRepository.Save();
@@ -169,29 +158,29 @@
         }
 
         [IsAuthenticated]
-        public ActionResult AccountDetails(int? id)                                             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        {                                                                                       //                                                                                                              //
-            if (id == null)                                                                     //                                          Account Details                                                     //
-            {                                                                                   //                                                                                                              //
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);                     //   1. Взима потребител от базата данни по съответно ID -> присвоява се на обект от клас DeveloperViewModel    //
-            }                                                                                   //   --------------------------------------------------------------------------------------------------------   //
-                                                                                                //   2. Ако developerModel.ID е равно  на Session["ID"] -> взима цялостна информация за съответния потребител   //
-            Developer developer = uow.DeveloperRepository.GetDeveloperByID((int)id);            //   --------------------------------------------------------------------------------------------------------   //
-                                                                                                //   3. Приходи                                                                                                 //
-            if (developer == null)                                                              //      3.1 Общ приход                                                                                          //
-            {                                                                                   //      3.2 ДДС ( 20% от общ приход )          |   Показват се в случай, че "Общ приход" е                      //
-                return HttpNotFound();                                                          //      3.3 Чист приход ( Общ приход - ДДС )   |   различен от 0                                                //
-            }                                                                                   //   --------------------------------------------------------------------------------------------------------   //
-                                                                                                //   4. Проекти ( Администратора има достъп до тази информация на всеки потребител )                            //
-            DeveloperViewModel developerModel = new DeveloperViewModel(developer);              //      4.1 Брой проекти                                                                                        //
-                                                                                                //      4.2 Брой Завършени проекти     |   Показват се в случай, че "Брой проекти" е                            //
-            if (id == (int)Session["ID"])                                                       //      4.3 Брой Незавършени проекти   |   различен от 0                                                        //
-            {                                                                                   //   --------------------------------------------------------------------------------------------------------   //
-                IEnumerable<Income> incomes = uow.IncomeRepository.GetIncomesForUser((int)id);  //   5. Администраторски възможности                                                                            //
-                                                                                                //      5.1 User Promote ( Developer -> TeamLeader )   |    Възможно е в случай, че ID-то на потребителския е   //
-                double incomeAmount = 0;                                                        //      5.2 User Demote ( TeamLeader -> Developer )    |    различно от това на Session["ID"]                   //
-                                                                                                //                                                                                                              //
-                if (incomes != null)                                                            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        public ActionResult AccountDetails(int? id)                                             
+        {                                                                                       
+            if (id == null)                                                                     
+            {                                                                                   
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);                     
+            }                                                                                   
+                                                                                                
+            Developer developer = uow.DeveloperRepository.GetDeveloperByID((int)id);            
+                                                                                                
+            if (developer == null)                                                              
+            {                                                                                   
+                return HttpNotFound();                                                          
+            }                                                                                   
+                                                                                                
+            DeveloperViewModel developerModel = new DeveloperViewModel(developer);              
+                                                                                                
+            if (id == (int)Session["ID"])                                                       
+            {                                                                                   
+                IEnumerable<Income> incomes = uow.IncomeRepository.GetIncomesForUser((int)id);  
+                                                                                                
+                double incomeAmount = 0;                                                        
+                                                                                                
+                if (incomes != null)                                                            
                 {
                     List<IncomeViewModel> incomesModel = new List<IncomeViewModel>();
 

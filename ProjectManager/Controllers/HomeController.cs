@@ -8,6 +8,10 @@
     using PagedList;
     using System.Collections.Generic;
     using System.Web.Mvc;
+    using System.Data;
+    using System.Web.Services;
+    using System.Configuration;
+    using System.Data.SqlClient;
 
     public class HomeController : Controller
     {

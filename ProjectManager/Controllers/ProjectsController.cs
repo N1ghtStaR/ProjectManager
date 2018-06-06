@@ -10,15 +10,18 @@
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
     using PagedList;
+    using ProjectManagerFactory;
 
     [IsAuthenticated]
     public class ProjectsController : Controller
     {
         private readonly UnitOfWork uow;
+        private readonly Factory factory;
 
         public ProjectsController()
         {
             this.uow = new UnitOfWork(new ProjectManagerDbContext());
+            this.factory = new Factory();
         }
 
         public ProjectsController(ProjectManagerDbContext context)
@@ -28,15 +31,6 @@
 
         public ActionResult Index(string projectTitle, int? page)
         {
-            /////////////////////////////////////////////////////////////////
-            //                                                             //
-            //   Взима цялата информация за съответния логнат потребител   //
-            //      1. Цялата -> страницирана                              //
-            //      2. Търсене по заглавие -> | В соров                    //
-            //      3. Сортиране по статус -> |   вид                      //
-            //                                                             //
-            /////////////////////////////////////////////////////////////////
-
             IEnumerable<Project> projects = uow.ProjectRepository.GetAllProjectsForUser((int)Session["ID"]);
 
             List<ProjectViewModel> model = new List<ProjectViewModel>();
@@ -114,15 +108,7 @@
             {
                 try
                 {
-                    Project project = new Project
-                    {
-                        ID = projectModel.ID,
-                        DeveleperID = projectModel.DeveleperID,
-                        Title = projectModel.Title,
-                        Description = projectModel.Description,
-                        Category = (Project.Division)projectModel.Category,
-                        Status = (Project.Statistic)projectModel.Status
-                    };
+                    Project project = factory.ProjectFactory.New(projectModel);
 
                     uow.ProjectRepository.Create(project);
                     uow.ProjectRepository.Save();
@@ -185,15 +171,7 @@
 
                 try
                 {
-                    Project project = new Project
-                    {
-                        ID = projectModel.ID,
-                        DeveleperID = projectModel.DeveleperID,
-                        Title = projectModel.Title,
-                        Description = projectModel.Description,
-                        Category = (Project.Division)projectModel.Category,
-                        Status = (Project.Statistic)projectModel.Status
-                    };
+                    Project project = factory.ProjectFactory.New(projectModel);
 
                     uow.ProjectRepository.Update(project);
                     uow.ProjectRepository.Save();
@@ -244,15 +222,7 @@
             {
                 try
                 {
-                    Project project = new Project
-                    {
-                        ID = projectModel.ID,
-                        DeveleperID = projectModel.DeveleperID,
-                        Title = projectModel.Title,
-                        Description = projectModel.Description,
-                        Category = (Project.Division)projectModel.Category,
-                        Status = (Project.Statistic)projectModel.Status
-                    };
+                    Project project = factory.ProjectFactory.New(projectModel);
 
                     uow.ProjectRepository.Update(project);
                     uow.ProjectRepository.Save();
@@ -303,12 +273,12 @@
             {
                 if (tasks != null)
                 {
-                    foreach (Task task in tasks)          ///////////////////////////////////////////////////
-                    {                                     //                                               //
-                        uow.TaskRepository.Delete(task);  //   За да бъде изтрит проект, трябва да бъдат   // 
-                        uow.TaskRepository.Save();        //   изтрити всички пренадлежащи му задачи       //
-                    }                                     //                                               //
-                }                                         ///////////////////////////////////////////////////
+                    foreach (Task task in tasks)          
+                    {                                     
+                        uow.TaskRepository.Delete(task);   
+                        uow.TaskRepository.Save();        
+                    }                                     
+                }                                         
 
                 uow.ProjectRepository.Delete(project);
                 uow.ProjectRepository.Save();

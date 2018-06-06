@@ -10,15 +10,18 @@
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
     using PagedList;
+    using ProjectManagerFactory;
 
     [IsAuthenticated]
     public class TasksController : Controller
     {
         private readonly UnitOfWork uow;
+        private readonly Factory factory;
 
         public TasksController()
         {
             this.uow = new UnitOfWork(new ProjectManagerDbContext());
+            this.factory = new Factory();
         }
 
         public TasksController(ProjectManagerDbContext context)
@@ -110,14 +113,7 @@
         {
             if (ModelState.IsValid)
             {
-                Task task = new Task
-                {
-                    ID = taskModel.ID,
-                    ProjectID = taskModel.ProjectID,
-                    Description = taskModel.Description,
-                    Priority = (Task.Anteriority)taskModel.Priority,
-                    Status = (Task.Stats)taskModel.Status
-                };
+                Task task = factory.TaskFactory.New(taskModel);
 
                 uow.TaskRepository.Create(task);
                 uow.TaskRepository.Save();
@@ -157,14 +153,7 @@
         {
             if (ModelState.IsValid)
             {
-                Task task = new Task
-                {
-                    ID = taskModel.ID,
-                    ProjectID = taskModel.ProjectID,
-                    Description = taskModel.Description,
-                    Priority = (Task.Anteriority)taskModel.Priority,
-                    Status = (Task.Stats)taskModel.Status
-                };
+                Task task = factory.TaskFactory.New(taskModel);
 
                 uow.TaskRepository.Update(task);
                 uow.TaskRepository.Save();
@@ -205,14 +194,7 @@
         {
             if (ModelState.IsValid)
             {
-                Task task = new Task
-                {
-                    ID = taskModel.ID,
-                    ProjectID = taskModel.ProjectID,
-                    Description = taskModel.Description,
-                    Priority = (Task.Anteriority)taskModel.Priority,
-                    Status = (Task.Stats)taskModel.Status
-                };
+                Task task = factory.TaskFactory.New(taskModel);
 
                 uow.TaskRepository.Update(task);
                 uow.TaskRepository.Save();

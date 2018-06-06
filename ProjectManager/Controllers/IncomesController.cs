@@ -8,15 +8,18 @@
     using ProjectManagerDB;
     using ProjectManagerDB.Entities;
     using PagedList;
+    using ProjectManagerFactory;
 
     [IsAuthenticated]
     public class IncomesController : Controller
     {
         private readonly UnitOfWork uow;
+        private readonly Factory factory;
 
         public IncomesController()
         {
             this.uow = new UnitOfWork(new ProjectManagerDbContext());
+            this.factory = new Factory();
         }
 
         public IncomesController(ProjectManagerDbContext context)
@@ -26,14 +29,6 @@
 
         public ActionResult Index(int? page)
         {
-            ///////////////////////////////////////////////////////////
-            //                                                       //
-            //   Взима от базата данни всички записи за съответния   //
-            //   потребител и ги връща на View()-то данните в        //
-            //   сранизирана форма                                   //
-            //                                                       //
-            ///////////////////////////////////////////////////////////
-
             IEnumerable<Income> incomes = uow.IncomeRepository.GetIncomesForUser((int)Session["ID"]);
 
             if(incomes != null)
@@ -90,14 +85,7 @@
             {
                 try
                 {
-                    Income income = new Income
-                    {
-                        ProjectID = incomeModel.ProjectID,
-                        DeveleperID = incomeModel.DeveleperID,
-                        Title = incomeModel.Title,
-                        Amount = incomeModel.Amount,
-                        ReleaseDate = incomeModel.ReleaseDate
-                    };
+                    Income income = factory.IncomeFactory.New(incomeModel);
 
                     uow.IncomeRepository.Create(income);
                     uow.IncomeRepository.Save();
