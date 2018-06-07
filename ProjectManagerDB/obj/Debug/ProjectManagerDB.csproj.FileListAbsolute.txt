@@ -14,3 +14,4 @@ E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\obj\D
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\obj\Debug\ProjectManagerDB.csprojAssemblyReference.cache
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\bin\Debug\PagedList.dll
 E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\bin\Debug\PagedList.xml
+E:\course_projects\second_semester\asp.net\ProjectManager\ProjectManagerDB\obj\Debug\ProjectManagerDB.Migrations.Messages.resources

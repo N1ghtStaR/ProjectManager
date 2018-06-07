@@ -1,5 +1,6 @@
 ﻿namespace ProjectManager.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Net;
     using System.Web.Mvc;
@@ -24,6 +25,81 @@
         public AuthenticationController(ProjectManagerDbContext context)
         {
             uow = new UnitOfWork(context);
+        }
+
+        [IsAuthenticated]
+        public ActionResult DeleteMessage(int id)
+        {
+            if(Session["Role"].ToString().Equals("TeamLeader"))
+            {
+                uow.MessageRepository.DeleteMessage(id);
+                uow.MessageRepository.Save();
+
+                return RedirectToAction("MessageRoom", "Authentication");
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [IsAuthenticated]
+        [HttpGet]
+        public ActionResult MessageRoom()
+        {
+            IEnumerable<Message> messages = uow.MessageRepository.GetMessages();
+
+            List<MessageViewModel> chat = new List<MessageViewModel>();
+
+            foreach (Message message in messages)
+            {
+                MessageViewModel model = new MessageViewModel(message);
+                chat.Add(model);
+            }
+
+            return View(chat);
+        }
+
+        [IsAuthenticated]
+        [HttpPost]
+        public ActionResult Chat(int developerID, string username, string description, DateTime date)
+        {
+            int id = 0;
+
+            IEnumerable<Message> check = uow.MessageRepository.GetMessages();
+
+            if(check == null)
+            {
+                id = 1;
+            }
+            else
+            {
+                List<Message> messages = new List<Message>();
+
+                foreach(Message m in check)
+                {
+                    if(m.ID > id)
+                    {
+                        id = m.ID;
+                    }
+                }
+
+                id += 1;
+            }
+
+            MessageViewModel ms = new MessageViewModel
+            {
+                ID = id,
+                DeveloperID = developerID,
+                Username = username,
+                Description = description,
+                Date = date
+            };
+
+            Message message = factory.MessageFactory.New(ms);
+
+            uow.MessageRepository.New(message);
+            uow.MessageRepository.Save();
+
+            return RedirectToAction("MessageRoom", "Authentication");
         }
 
         [Authenticated]

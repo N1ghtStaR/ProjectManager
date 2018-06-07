@@ -1,5 +1,6 @@
 ﻿namespace ProjectManagerFactory
 {
+    using ProjectManager.Factory.Factories.MessageFactory;
     using ProjectManagerFactory.Factories.DeveloperFactory;
     using ProjectManagerFactory.Factories.IncomeFactory;
     using ProjectManagerFactory.Factories.ProjectFactory;
@@ -11,6 +12,7 @@
         private ProjectFactory projectFactory;
         private TaskFactory taskFactory;
         private IncomeFactory incomeFactory;
+        private MessageFactory messageFactory;
 
         public DeveloperFactory DeveloperFactory
         {
@@ -61,6 +63,19 @@
                 }
 
                 return incomeFactory;
+            }
+        }
+
+        public MessageFactory MessageFactory
+        {
+            get
+            {
+                if(messageFactory == null)
+                {
+                    messageFactory = new MessageFactory();
+                }
+
+                return messageFactory;
             }
         }
     }

@@ -9,6 +9,7 @@ namespace ProjectManagerDB
         public DbSet<Income> Incomes { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Task> Tasks { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         public ProjectManagerDbContext() : base("name=ProjectManagerDbContext")
         {

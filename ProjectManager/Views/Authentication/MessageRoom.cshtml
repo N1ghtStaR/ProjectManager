@@ -1,0 +1,66 @@
+﻿@model IEnumerable<ProjectManager.Models.MessageViewModel>
+
+
+@{
+    ViewBag.Title = "Index";
+}
+<div class="jumbotron">
+    <h2 class="text-muted text-center">@Session["Username"], welcome in to chat!</h2>
+</div>
+
+@if (Session["ID"] != null)
+{
+    using (Html.BeginForm("Chat", "Authentication"))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <input type="text" class="form-control hidden" name="DeveloperID" value="@Session["ID"]" />
+            <input type="text" class="form-control hidden" name="Username" value="@Session["Username"]" />
+            <input type="text" class="form-control" name="Description" placeholder="Chat" />
+            <input type="datetime" class="form-control hidden" name="Date" value="@DateTime.Now" />
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default hidden" />
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@foreach (var item in Model)
+{
+    if (item.DeveloperID.Equals((int)Session["ID"]))
+    {
+        <div class="alert alert-success">
+            @if (Session["Role"].ToString().Equals("TeamLeader"))
+            {
+                <a href="@Url.Action("DeleteMessage", "Authentication", new { id = item.ID })" class="btn" style="float: right">Delete</a>
+            }
+            <h4>@item.Username</h4>
+            <h5>@item.Date</h5>
+            <hr />
+            <p>@item.Description</p>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            @if (Session["Role"].ToString().Equals("TeamLeader"))
+            {
+                <a href="@Url.Action("DeleteMessage", "Authentication", new { id = item.ID })" class="btn" style="float: right">Delete</a>
+            }
+            <h4>@item.Username</h4>
+            <h5>@item.Date</h5>
+            <hr />
+            <p>@item.Description</p>
+        </div>
+    }
+}
+
+@section Scripts 
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

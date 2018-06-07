@@ -57,6 +57,8 @@
     <Compile Include="Repositories\DeveloperRepository\IDeveloperRepository.cs" />
     <Compile Include="Repositories\IncomeRepository\IIncomeRepository.cs" />
     <Compile Include="Repositories\IncomeRepository\IncomeRepository.cs" />
+    <Compile Include="Repositories\MessageRepository\IMessageRepository.cs" />
+    <Compile Include="Repositories\MessageRepository\MessageRepository.cs" />
     <Compile Include="Repositories\ProjectRepository\IProjectRepository.cs" />
     <Compile Include="Repositories\ProjectRepository\ProjectRepository.cs" />
     <Compile Include="Repositories\TaskRepository\ITaskRepository.cs" />

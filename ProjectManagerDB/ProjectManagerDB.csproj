@@ -54,11 +54,16 @@
   <ItemGroup>
     <Compile Include="Entities\Developer.cs" />
     <Compile Include="Entities\Income.cs" />
+    <Compile Include="Entities\Message.cs" />
     <Compile Include="Entities\Project.cs" />
     <Compile Include="Entities\Task.cs" />
     <Compile Include="Migrations\201805081056431_Initial.cs" />
     <Compile Include="Migrations\201805081056431_Initial.Designer.cs">
       <DependentUpon>201805081056431_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806070805067_Messages.cs" />
+    <Compile Include="Migrations\201806070805067_Messages.Designer.cs">
+      <DependentUpon>201806070805067_Messages.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ProjectManagerDbContext.cs" />
@@ -71,6 +76,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201805081056431_Initial.resx">
       <DependentUpon>201805081056431_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806070805067_Messages.resx">
+      <DependentUpon>201806070805067_Messages.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

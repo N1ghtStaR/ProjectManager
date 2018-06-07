@@ -2,6 +2,7 @@
 {
     using ProjectManagerDataAccess.Repositories.DeveloperRepository;
     using ProjectManagerDataAccess.Repositories.IncomeRepository;
+    using ProjectManagerDataAccess.Repositories.MessageRepository;
     using ProjectManagerDataAccess.Repositories.ProjectRepository;
     using ProjectManagerDataAccess.Repositories.TaskRepository;
     using ProjectManagerDB;
@@ -14,6 +15,7 @@
         private ProjectRepository projectRepository;
         private TaskRepository taskRepository;
         private IncomeRepository incomeRepository;
+        private MessageRepository messageRepository;
 
         public UnitOfWork(ProjectManagerDbContext connection)
         {
@@ -69,6 +71,19 @@
                 }
 
                 return incomeRepository;
+            }
+        }
+
+        public MessageRepository MessageRepository
+        {
+            get
+            {
+                if(messageRepository == null)
+                {
+                    messageRepository = new MessageRepository(context);
+                }
+
+                return messageRepository;
             }
         }
 

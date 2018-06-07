@@ -38,5 +38,6 @@
 
         public virtual ICollection<Income> Incomes { get; set; }
         public virtual ICollection<Project> Projects { get; set; }
+        public virtual ICollection<Message> Messages { get; set; }
     }
 }
