@@ -9,100 +9,109 @@
 
 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-<div>
+<div class="alert alert-dismissable>
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Username)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Username)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Role)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Role)
-        </dd>
+        <div class="alert alert-warning">
+            <dt>
+                @Html.DisplayNameFor(model => model.Username)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Username)
+            </dd>
+
+            <br />
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+
+            <br />
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Role)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Role)
+            </dd>
+        </div>
+
         <hr />
-        <center>
-            <h2>Projects Details</h2>
-        </center>
-        <hr style="width: 50%" />
+        <h2 class="text-center">Projects Details</h2>
         <br />
-        <dt>
-            <p>Projects</p>
-        </dt>
-        <dd>
-            <p>
-                @ViewBag.Projects
-                @if (Model.ID.Equals(Session["ID"]) && ViewBag.Projects != 0)
+
+        <div class="alert alert-info">
+            <dt>
+                @if (Model.ID.Equals(Session["ID"]))
                 {
-                    <a href="@Url.Action("Index", "Projects")" class="btn btn-sm btn-default">Details</a>
+                    <a href="@Url.Action("Index", "Projects")">Projects</a>
                 }
-            </p>
-        </dd>
+                else
+                {
+                    <p>Projects</p>
+                }
+            </dt>
+            <dd>
+                @ViewBag.Projects
+            </dd>
+        </div>
+
         @if (ViewBag.Projects != 0)
         {
-            <dt>
-                In Progress
-            </dt>
-            <dd>
-                <p>
+            <div class="alert alert-info">
+                <dt>
+                    @if (Model.ID.Equals(Session["ID"]))
+                    {
+                        <a href="@Url.Action("Status", "Projects", new { status = "InProgress" })">In Progress</a>
+                    }
+                    else
+                    {
+                        <p>In Progress</p>
+                    }
+                </dt>
+                <dd>
                     @ViewBag.ProjectsInProgress
-                    @if (Model.ID.Equals(Session["ID"]) && ViewBag.ProjectsInProgress != 0)
+                </dd>       
+            </div>
+
+            <div class="alert alert-info">
+                <dt>
+                    @if (Model.ID.Equals(Session["ID"]))
                     {
-                        <a href="@Url.Action("Status", "Projects", new { status = "InProgress" })" class="btn btn-sm btn-default">Details</a>
+                        <a href="@Url.Action("Status", "Projects", new { status = "Ready" })">Ready</a>
                     }
-                </p>
-            </dd>
-            <dt>
-                Ready
-            </dt>
-            <dd>
-                <p>
+                    else
+                    {
+                        <p>Ready</p>
+                    }
+                </dt>
+                <dd>
                     @ViewBag.ProjectsReady
-                    @if (Model.ID.Equals(Session["ID"]) && ViewBag.ProjectsReady != 0)
-                    {
-                        <a href="@Url.Action("Status", "Projects", new { status = "Ready" })" class="btn btn-sm btn-default">Details</a>
-                    }
-                </p>
-            </dd>
+                </dd>
+            </div>
         }
 
         @if (Model.ID.Equals(Session["ID"]))
         {
             <hr />
-            <center>
-                <h2>Income Details</h2>
-            </center>
-            <hr style="width:50%" />
+            <h2 class="text-center">Income Details</h2>
             <br />
-            <dt>
-                <p>Total Incomes</p>
-            </dt>
-            <dd>
-                <p>@ViewBag.TotalIncomes$</p>
-            </dd>
+
+            <div class="alert alert-info">
+                <strong>Total Incomes:</strong> +@ViewBag.TotalIncomes$
+            </div>
+
             if (ViewBag.TotalIncome != 0)
             {
-                <dt>
-                    <p>Impost</p>
-                </dt>
-                <dd>
-                    <p>-@ViewBag.DDS$</p>
-                </dd>
-                <dt>
-                    <p>Incomes In Bank</p>
-                </dt>
-                <dd>
-                    <p>@ViewBag.Cash$</p>
-                </dd>
+                <div class="alert alert-danger">
+                    <strong>Impost:</strong> -@ViewBag.DDS$
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>Incomes In Bank:</strong> @ViewBag.Cash$
+                </div>
             }
         }
     </dl>
@@ -116,6 +125,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.ID, "ID", htmlAttributes: new { @class = "control-label col-md-2" })
                 </div>
+
                 <div class="form-group">
                     @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -123,6 +133,7 @@
                         @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
                     </div>
                 </div>
+
                 <div class="form-group">
                     @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -130,6 +141,7 @@
                         @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                     </div>
                 </div>
+
                 <div class="form-group">
                     @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -137,13 +149,16 @@
                         @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                     </div>
                 </div>
+
                 <div class="form-group">
                     <div class="col-md-10">
                         <input type="text" name="Role" value="@ViewBag.RoleValue" />
                     </div>
                 </div>
             </div>
+            
             <hr />
+
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
                     <input type="submit" value="@ViewBag.SubmitValue" class="btn btn-primary" />

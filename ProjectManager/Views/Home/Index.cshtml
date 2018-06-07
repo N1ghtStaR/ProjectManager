@@ -17,6 +17,15 @@
             <h4>Hello <span>@Session["Username"]</span> ! You're successfully loged in as <span>@Session["Role"]</span></h4>
         </center>
     }
+    else
+    {
+        <hr />
+
+        <div class="text-center">
+            <a href="@Url.Action("Registration", "Authentication")" class="btn btn-lg" style="border-color:royalblue; ">Registration</a>
+            <a href="@Url.Action("LogIn", "Authentication")" class="btn btn-lg btn-primary">Log in</a>
+        </div>
+    }
 </div>
 
 @if (Session["Role"] != null && Session["Role"].ToString().Equals("TeamLeader"))
@@ -35,7 +44,9 @@
                 <div class="panel-body">
                     @if (TempData["UpdatedDeveloper"] != null)
                     {
-                        <h4 class="text-muted text-success">@TempData["UpdatedDeveloper"]</h4>
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> @TempData["UpdatedDeveloper"]
+                        </div>   
                     }
                     <table style="width:100%" class="table table-striped table-bordered table-hover datatables">
                         <thead>

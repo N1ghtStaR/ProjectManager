@@ -4,7 +4,7 @@
     ViewBag.Title = "Index";
 }
 
-<h2><span>@Session["Username"]</span>'s Incomes</h2>
+<h2><a href="@Url.Action("AccountDetails", "Authentication", new { id = (int)Session["ID"] })" style="color: black; text-decoration: none">@Session["Username"]</a>'s Incomes</h2>
 <hr />
 <br />
 

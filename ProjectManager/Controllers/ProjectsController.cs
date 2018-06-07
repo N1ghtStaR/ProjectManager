@@ -166,7 +166,7 @@
                     {
                         if (task.Status.ToString().Equals("InProgress"))
                         {
-                            TempData["Message"] = "Project '" + projectModel.Title + "' have unfinished tasks!";
+                            TempData["ErrorMessage"] = "Project '" + projectModel.Title + "' have unfinished tasks!";
 
                             return RedirectToAction("Status", "Tasks", routeValues: new { ProjectID = projectModel.ID, Status = "InProgress" });
                         }
